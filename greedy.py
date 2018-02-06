@@ -25,15 +25,11 @@ def maze_print(maze):
 def man_dist(x1, y1, x2, y2):
     return abs(abs(x2)-abs(x1)) + abs(abs(y2) - abs(y1))
 
-def g(x1, y1, x2, y2, cost):
-    return (man_dist(x1, y1, x2, y2) + cost)
-
-def a_star(maze, start, end):
+def greedy(maze, start, end):
     q = queue.PriorityQueue()
-    q.put((g(end[0], end[1], start[0], start[1], 0), start[0], start[1]))
+    q.put((man_dist(end[0], end[1], start[0], start[1]), start[0], start[1]))
     parents = {}
-    cost_map = {}
-    visited = set([(start[0], start[1])])
+    visited = set([(man_dist(end[0], end[1], start[0], start[1]), start[0], start[1])])
     dest = ()
     while q:
         node = q.get()
@@ -43,19 +39,19 @@ def a_star(maze, start, end):
             dest = node
             break
             
-        if maze[node[1]][node[2]+1]!='%' and (node[1],node[2]+1) not in visited:   #add right
+        if maze[node[1]][node[2]+1]!='%' and (man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1) not in visited:   #add right
             q.put((man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1))
             parents[(man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1)]=node
             
-        if maze[node[1]+1][node[2]]!='%' and (node[1]+1,node[2]) not in visited:    #down
+        if maze[node[1]+1][node[2]]!='%' and (man_dist(node[1]+1, node[2], end[0], end[1]), node[1]+1,node[2]) not in visited:    #down
             q.put((man_dist(node[1]+1, node[2], end[0], end[1]), node[1]+1,node[2]))
             parents[(man_dist(node[1]+1, node[2], end[0], end[1]), node[1]+1,node[2])]=node
             
-        if maze[node[1]][node[2]-1]!='%' and (node[1],node[2]-1) not in visited:   #left
+        if maze[node[1]][node[2]-1]!='%' and (man_dist(node[1], node[2]-1, end[0], end[1]), node[1],node[2]-1) not in visited:   #left
             q.put((man_dist(node[1], node[2]-1, end[0], end[1]), node[1],node[2]-1))
             parents[(man_dist(node[1], node[2]-1, end[0], end[1]), node[1],node[2]-1)]=node
         
-        if maze[node[1]-1][node[2]]!='%' and (node[1]-1,node[2]) not in visited:    #up
+        if maze[node[1]-1][node[2]]!='%' and (man_dist(node[1]-1, node[2], end[0], end[1]), node[1]-1,node[2]) not in visited:    #up
             q.put((man_dist(node[1]-1, node[2], end[0], end[1]), node[1]-1,node[2]))
             parents[(man_dist(node[1]-1, node[2], end[0], end[1]), node[1]-1,node[2])]=node
     
