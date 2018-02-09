@@ -65,7 +65,7 @@ def bfs(maze,start):
 	return solution
 
 def write_sol(maze,solution):
-	file = open('solution.txt','w')
+	file = open('big_BFS_solution.txt','w')
 	for node in solution:
 		maze[node[0]][node[1]] = '.'
 	for line in maze:
@@ -73,7 +73,7 @@ def write_sol(maze,solution):
 		file.write("%s\n" %str)
 	file.close()
 	
-maze = maze_parse("bigMaze.txt")
+maze = maze_parse("bigmaze.txt")
 sol = bfs(maze,(29,1))
 write_sol(maze,sol)
 

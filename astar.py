@@ -60,23 +60,27 @@ def astar(maze, start, end):
 
         if maze[node[1]][node[2]+1]!='%' and (node[1],node[2]+1) not in visited:   #add right
             q.put((g(node[1], node[2]+1, end[0], end[1], cost_map[(node[1], node[2])]+1),  node[1], node[2]+1))
-            parents[(node[1],node[2]+1)]=(node[1], node[2])
-            cost_map[(node[1],node[2]+1)] = cost_map[(node[1], node[2])]+1
+            if((node[1], node[2]+1) not in parents.keys() or cost_map[parents[(node[1],node[2]+1)]] > cost_map[(node[1], node[2])]+1):
+                parents[(node[1],node[2]+1)]=(node[1], node[2])
+                cost_map[(node[1],node[2]+1)] = cost_map[(node[1], node[2])]+1
             
         if maze[node[1]+1][node[2]]!='%' and (node[1]+1,node[2]) not in visited:    #down
             q.put((g(node[1]+1, node[2], end[0], end[1], cost_map[(node[1], node[2])]+1), node[1]+1, node[2]))
-            parents[(node[1]+1,node[2])]=(node[1], node[2])
-            cost_map[(node[1]+1,node[2])] = cost_map[(node[1], node[2])]+1
+            if((node[1]+1, node[2]) not in parents.keys() or cost_map[parents[(node[1]+1,node[2])]] > cost_map[(node[1], node[2])]+1):
+                parents[(node[1]+1,node[2])]=(node[1], node[2])
+                cost_map[(node[1]+1,node[2])] = cost_map[(node[1], node[2])]+1
             
         if maze[node[1]][node[2]-1]!='%' and (node[1],node[2]-1) not in visited:   #left
             q.put((g(node[1], node[2]-1, end[0], end[1], cost_map[(node[1], node[2])]+1), node[1], node[2]-1))
-            parents[(node[1],node[2]-1)]=(node[1], node[2])
-            cost_map[(node[1],node[2]-1)] = cost_map[(node[1], node[2])]+1
+            if((node[1], node[2]-1) not in parents.keys() or cost_map[parents[(node[1],node[2]-1)]] > cost_map[(node[1], node[2])]+1):
+                parents[(node[1],node[2]-1)]=(node[1], node[2])
+                cost_map[(node[1],node[2]-1)] = cost_map[(node[1], node[2])]+1
             
         if maze[node[1]-1][node[2]]!='%' and (node[1]-1,node[2]) not in visited:    #up
             q.put((g(node[1]-1, node[2], end[0], end[1], cost_map[(node[1], node[2])]+1), node[1]-1, node[2]))
-            parents[(node[1]-1,node[2])]=(node[1], node[2])
-            cost_map[(node[1]-1,node[2])] = cost_map[(node[1], node[2])]+1
+            if((node[1]-1, node[2]) not in parents.keys() or cost_map[parents[(node[1]-1,node[2])]] > cost_map[(node[1], node[2])]+1):
+                parents[(node[1]-1,node[2])]=(node[1], node[2])
+                cost_map[(node[1]-1,node[2])] = cost_map[(node[1], node[2])]+1
             
     curr = (dest[1], dest[2])
     solution=[curr]
