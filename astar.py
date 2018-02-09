@@ -36,13 +36,22 @@ def astar(maze, start, end):
     cost_map[start] = 0
     visited = set([(start[0], start[1])])
     dest = ()
-    while q:
+    min_cost = float('inf')
+    while not q.empty():
         node = q.get()
-        print(node) # node is (cost, y, x)
+        #print(node) # node is (cost, y, x)
         visited.add((node[1], node[2]))
+
+        if(cost_map[(node[1], node[2])] >= min_cost):
+            #print("quit")
+            continue
+        
         if maze[node[1]][node[2]]=='.':
-            dest = node
-            break
+            if(cost_map[(node[1], node[2])] < min_cost):
+                #print("solution found")
+                dest = node
+                min_cost = cost_map[(node[1], node[2])]
+                continue
 
         if maze[node[1]][node[2]+1]!='%' and (node[1],node[2]+1) not in visited:   #add right
             q.put((g(node[1], node[2]+1, end[0], end[1], cost_map[(node[1], node[2])]+1),  node[1], node[2]+1))
