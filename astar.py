@@ -37,18 +37,23 @@ def astar(maze, start, end):
     visited = set([(start[0], start[1])])
     dest = ()
     min_cost = float('inf')
-    while not q.empty():
+    while (not q.empty()):
         node = q.get()
         #print(node) # node is (cost, y, x)
         visited.add((node[1], node[2]))
-
-        if(cost_map[(node[1], node[2])] >= min_cost):
+        
+        if((node[1], node[2]) == (29, 2)):
+            print(parents[(29,2)])
+            
+        if(node[0] >= min_cost):
             #print("quit")
-            continue
+            continue;
         
         if maze[node[1]][node[2]]=='.':
-            if(cost_map[(node[1], node[2])] < min_cost):
-                #print("solution found")
+            if(node[0] < min_cost):
+                print("solution found")
+                print(cost_map[(node[1], node[2])])
+                print(node[0])
                 dest = node
                 min_cost = cost_map[(node[1], node[2])]
                 continue
@@ -84,7 +89,7 @@ def astar(maze, start, end):
     return solution
 
 def write_sol(maze,solution):
-    file = open('solution.txt','w')
+    file = open('bigsolution.txt','w')
     for node in solution:
         maze[node[0]][node[1]] = '.'
     for line in maze:
@@ -92,8 +97,8 @@ def write_sol(maze,solution):
         file.write("%s\n" %str)
     file.close()
     
-maze = maze_parse("medmaze.txt")
-sol = astar(maze,(1,1), (21,59))
+maze = maze_parse("bigmaze.txt")
+sol = astar(maze,(29,1), (1,79))
 write_sol(maze,sol)
 
         
