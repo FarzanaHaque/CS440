@@ -11,7 +11,7 @@ def maze_parse(path_to_file):
 		x_line = []
 		for c in line:
 			if(c != '\n'):
-				x_line.append(c)        
+				x_line.append(c)
 		maze.append(x_line)
 	file.close()
 	return maze
@@ -21,7 +21,7 @@ def maze_print(maze):
       for c in line:
          print(c, end="")
       print()
-       
+
 #maze_print(maze)
 #print(maze[1][6])
 
@@ -31,50 +31,51 @@ def bfs(maze,start):
 	parents = {}
 	visited = set([start])
 	dest = ()
+	nodes_ex = 0
 	while q:
 		node = q.get()
 		visited.add(node)
 		if maze[node[0]][node[1]]=='.':
 			dest = node
 			break
-			
+		nodes_ex += 1
 		if maze[node[0]][node[1]+1]!='%' and (node[0],node[1]+1) not in visited:   #add right
 			q.put((node[0],node[1]+1))
 			parents[(node[0],node[1]+1)]=node
-			
+
 		if maze[node[0]+1][node[1]]!='%' and (node[0]+1,node[1]) not in visited:    #down
 			q.put((node[0]+1,node[1]))
 			parents[(node[0]+1,node[1])]=node
-			
+
 		if maze[node[0]][node[1]-1]!='%' and (node[0],node[1]-1) not in visited:   #left
 			q.put((node[0],node[1]-1))
 			parents[(node[0],node[1]-1)]=node
-		
+
 		if maze[node[0]-1][node[1]]!='%' and (node[0]-1,node[1]) not in visited:    #up
 			q.put((node[0]-1,node[1]))
 			parents[(node[0]-1,node[1])]=node
-	
+
 	curr = dest
 	solution=[dest]
 	while curr!=start:
 		curr=parents[curr]
 		solution.append(curr)
-	
+
 	print("cost is %d" % len(solution))
 	print("nodes expanded is %d" % len(parents))
+	print("new estimate is %d" % nodes_ex)
 	return solution
 
 def write_sol(maze,solution):
-	file = open('big_BFS_solution.txt','w')
+	file = open('med_BFS_solution.txt','w')
 	for node in solution:
 		maze[node[0]][node[1]] = '.'
 	for line in maze:
 		str = ''.join(line)
 		file.write("%s\n" %str)
 	file.close()
-	
-maze = maze_parse("bigmaze.txt")
-sol = bfs(maze,(29,1))
-write_sol(maze,sol)
 
-		
+maze = maze_parse("medmaze.txt")
+
+sol = bfs(maze,(1,1))
+write_sol(maze,sol)
