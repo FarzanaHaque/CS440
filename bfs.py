@@ -4,6 +4,7 @@
 
 import queue
 
+
 def maze_parse(path_to_file):
 	file = open(path_to_file, "r")
 	maze = []

@@ -42,7 +42,7 @@ def astar(maze, start, end):
         node = q.get()
         #print(node) # node is (cost, y, x)
         visited.add((node[1], node[2]))
-
+        
         if(node[0] >= min_cost):
             break;
 

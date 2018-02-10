@@ -130,7 +130,7 @@ def find_all_nodes(maze):
     nodes = []
     for row in range(0, len(maze)):
        for column in range(0, len(maze[row])):
-          if(maze[row][column] == '.'):
+          if(maze[row][column] == '.' or maze[row][column] == 'P'):
               nodes.append((row, column))
     return nodes
 
@@ -140,26 +140,21 @@ def dict_for_graph(nodes):
         node_dict[nodes[i]] = i
     return node_dict
 
-def g(cost, maze, current):
+def g(cost, maze):
     nodes = find_all_nodes(maze)
-    nodes.append(current)
-    nodes = set(nodes)
-    nodes = list(nodes)
     node_dict = dict_for_graph(nodes)
-
     g = Graph(len(nodes))
     for node_u in nodes:
         for node_v in nodes:
             dist = man_dist(node_u, node_v)
             if(node_u != node_v):
                 g.addEdge(node_dict[node_u], node_dict[node_v], dist)
-
     sum = g.KruskalMST()
     return sum + cost
 
 def astar(maze, start):
     q = queue.PriorityQueue()
-    q.put((g(0, maze, start), start[0], start[1]))
+    q.put((g(0, maze), start[0], start[1]))
     parents = {}
     cost_map = {}
     cost_map[start] = 0
@@ -169,7 +164,7 @@ def astar(maze, start):
     total_cost = 0
     visit_counter = '1';
     old_start = start
-    while (len(find_all_nodes(maze)) != 0):
+    while (len(find_all_nodes(maze)) > 1):
         node = q.get()
         visited.add((node[1], node[2]))
 
@@ -187,7 +182,7 @@ def astar(maze, start):
             total_cost += (len(solution) - 1)
 
             q = queue.PriorityQueue()
-            q.put((g(total_cost, maze, (node[1], node[2])), node[1], node[2]))
+            q.put((g(0, maze), node[1], node[2]))
             parents = {}
             cost_map = {}
             cost_map[(node[1], node[2])] = 0
@@ -198,35 +193,37 @@ def astar(maze, start):
         nodes_ex += 1
 
         if maze[node[1]][node[2]+1]!='%' and (node[1],node[2]+1) not in visited:   #add right
-            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]+1)),  node[1], node[2]+1))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze),  node[1], node[2]+1))
             if((node[1], node[2]+1) not in parents.keys() or cost_map[parents[(node[1],node[2]+1)]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1],node[2]+1)]=(node[1], node[2])
                 cost_map[(node[1],node[2]+1)] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]+1][node[2]]!='%' and (node[1]+1,node[2]) not in visited:    #down
-            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]+1,node[2])), node[1]+1, node[2]))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze), node[1]+1, node[2]))
             if((node[1]+1, node[2]) not in parents.keys() or cost_map[parents[(node[1]+1,node[2])]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1]+1,node[2])]=(node[1], node[2])
                 cost_map[(node[1]+1,node[2])] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]][node[2]-1]!='%' and (node[1],node[2]-1) not in visited:   #left
-            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]-1)), node[1], node[2]-1))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze), node[1], node[2]-1))
             if((node[1], node[2]-1) not in parents.keys() or cost_map[parents[(node[1],node[2]-1)]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1],node[2]-1)]=(node[1], node[2])
                 cost_map[(node[1],node[2]-1)] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]-1][node[2]]!='%' and (node[1]-1,node[2]) not in visited:    #up
-            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]-1,node[2])), node[1]-1, node[2]))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze), node[1]-1, node[2]))
             if((node[1]-1, node[2]) not in parents.keys() or cost_map[parents[(node[1]-1,node[2])]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1]-1,node[2])]=(node[1], node[2])
                 cost_map[(node[1]-1,node[2])] = cost_map[(node[1], node[2])]+1
 
+
+
     print("cost is %d" % total_cost)
     print("Nodes Expanded is %d" % nodes_ex)
 
-maze = maze_parse("smallmaze12.txt")
+maze = maze_parse("medmaze12.txt")
 # tiny is (4,4)
 # small is (1,7)
 # med is (8, 25)
-sol = astar(maze,(1,7))
+sol = astar(maze,(8,25))
 maze_print(maze)
