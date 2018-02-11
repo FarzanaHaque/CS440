@@ -1,7 +1,3 @@
-#Read in a file
-#Read line by line to fill out a list of characters in a list of lists (2d) array
-#print it out array
-
 import queue
 
 def maze_parse(path_to_file):
@@ -31,15 +27,14 @@ def greedy(maze, start, end):
     parents = {}
     visited = set([(man_dist(end[0], end[1], start[0], start[1]), start[0], start[1])])
     dest = ()
-    #nodes_ex = 0
+    node_ex = 0
     while not q.empty():
         node = q.get()
-        #visited.add(node)
-        #print(node)
+
         if maze[node[1]][node[2]]=='.':
             dest = node
             break
-        #nodes_ex += 1
+        node_ex += 1
         if maze[node[1]][node[2]+1]!='%' and (man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1) not in visited:   #add right
             visited.add((man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1))
             q.put((man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1))
@@ -67,13 +62,11 @@ def greedy(maze, start, end):
         solution.append(curr)
 
     print("cost is %d" % len(solution))
-    #print("nodes expanded is %d" % len(parents))
-    #print("new estimate is %d" % nodes_ex)
-    print("len of visited %d" %len(visited))
+    print("len of visited %d" % node_ex)
     return solution
 
 def write_sol(maze,solution):
-    file = open('solution.txt','w')
+    file = open('greedy_med_solution.txt','w')
     for node in solution:
         maze[node[1]][node[2]] = '.'
     for line in maze:
@@ -81,6 +74,7 @@ def write_sol(maze,solution):
         file.write("%s\n" %str)
     file.close()
 
-maze = maze_parse("mediumMaze.txt")
-sol = greedy(maze,(1,1), (21,59))
+#to use, change the input file, and specify the start position
+maze = maze_parse("medmaze.txt")
+sol = greedy(maze,(1,1),(21, 59))
 write_sol(maze,sol)

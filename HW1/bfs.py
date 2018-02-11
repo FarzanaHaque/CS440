@@ -1,7 +1,3 @@
-#Read in a file
-#Read line by line to fill out a list of characters in a list of lists (2d) array
-#print it out array
-
 import queue
 
 def maze_parse(path_to_file):
@@ -22,22 +18,22 @@ def maze_print(maze):
          print(c, end="")
       print()
 
-#maze_print(maze)
-#print(maze[1][6])
-
 def bfs(maze,start):
-	q = queue.Queue()               #nodes are (row,col)
+	q = queue.Queue()
 	q.put(start)
 	parents = {}
 	visited = set([start])
 	dest = ()
-	#nodes_ex = 0
+	node_ex = 0
+
 	while q:
 		node = q.get()
 		if maze[node[0]][node[1]]=='.':      #found solution
 			dest = node
 			break
-		#nodes_ex += 1
+		
+		node_ex += 1
+
 		if maze[node[0]][node[1]+1]!='%' and (node[0],node[1]+1) not in visited:   #add right
 			visited.add((node[0],node[1]+1))
 			q.put((node[0],node[1]+1))
@@ -65,13 +61,11 @@ def bfs(maze,start):
 		solution.append(curr)
 
 	print("cost is %d" % len(solution))
-	#print("nodes expanded is %d" % len(parents))
-	#print("new estimate is %d" % nodes_ex)
-	print("len of visited is %d" %len(visited))
+	print("len of visited is %d" % node_ex)
 	return solution
 
 def write_sol(maze,solution):
-	file = open('solution.txt','w')
+	file = open('bfs_open_solution.txt','w')
 	for node in solution:
 		maze[node[0]][node[1]] = '.'
 	for line in maze:
@@ -79,8 +73,9 @@ def write_sol(maze,solution):
 		file.write("%s\n" %str)
 	file.close()
 
-maze = maze_parse("mediumMaze.txt")
-sol = bfs(maze,(1,1))
+#to use, change the input file, and specify the start position
+maze = maze_parse("openmaze.txt")
+sol = bfs(maze,(1,23))
 write_sol(maze,sol)
 
 		
