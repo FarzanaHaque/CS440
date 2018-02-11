@@ -46,13 +46,12 @@ def dict_for_graph(nodes):
 
 def g(cost, maze, current):
     nodes = find_all_nodes(maze)
-    node_dict = dict_for_graph(nodes)
     q = queue.PriorityQueue()
-
+    if(len(nodes) == 0):
+        return cost
     for node_u in nodes:
         dist = man_dist(node_u, current)
         q.put(dist)
-    
     return q.get() + cost
 
 def astar(maze, start):
@@ -73,7 +72,7 @@ def astar(maze, start):
 
         if maze[node[1]][node[2]]=='.':
             maze[node[1]][node[2]] = visit_counter
-            visit_counter = chr(ord(visit_counter) + 1)
+            visit_counter = chr(ord(visit_counter) + 0)
             if(ord(visit_counter) == ord(':')):
                 visit_counter = 'a'
 
@@ -97,28 +96,28 @@ def astar(maze, start):
 
         if maze[node[1]][node[2]+1]!='%' and (node[1],node[2]+1) not in visited:   #add right
             visited.add((node[1], node[2]+1))
-			q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]+1)),  node[1], node[2]+1))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]+1)),  node[1], node[2]+1))
             if((node[1], node[2]+1) not in parents.keys() or cost_map[parents[(node[1],node[2]+1)]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1],node[2]+1)]=(node[1], node[2])
                 cost_map[(node[1],node[2]+1)] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]+1][node[2]]!='%' and (node[1]+1,node[2]) not in visited:    #down
             visited.add((node[1]+1, node[2]))
-			q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]+1,node[2])), node[1]+1, node[2]))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]+1,node[2])), node[1]+1, node[2]))
             if((node[1]+1, node[2]) not in parents.keys() or cost_map[parents[(node[1]+1,node[2])]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1]+1,node[2])]=(node[1], node[2])
                 cost_map[(node[1]+1,node[2])] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]][node[2]-1]!='%' and (node[1],node[2]-1) not in visited:   #left
             visited.add((node[1], node[2]-1))
-			q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]-1)), node[1], node[2]-1))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]-1)), node[1], node[2]-1))
             if((node[1], node[2]-1) not in parents.keys() or cost_map[parents[(node[1],node[2]-1)]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1],node[2]-1)]=(node[1], node[2])
                 cost_map[(node[1],node[2]-1)] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]-1][node[2]]!='%' and (node[1]-1,node[2]) not in visited:    #up
             visited.add((node[1]-1, node[2]))
-			q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]-1,node[2])), node[1]-1, node[2]))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]-1,node[2])), node[1]-1, node[2]))
             if((node[1]-1, node[2]) not in parents.keys() or cost_map[parents[(node[1]-1,node[2])]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1]-1,node[2])]=(node[1], node[2])
                 cost_map[(node[1]-1,node[2])] = cost_map[(node[1], node[2])]+1
@@ -126,9 +125,9 @@ def astar(maze, start):
     print("cost is %d" % total_cost)
     print("Nodes Expanded is %d" % nodes_ex)
 
-maze = maze_parse("smallmaze12.txt")
+maze = maze_parse("bigmaze12.txt")
 # tiny is (4,4)
 # small is (1,7)
 # med is (8, 25)
-sol = astar(maze,(1,7))
+sol = astar(maze,(11,14))
 maze_print(maze)

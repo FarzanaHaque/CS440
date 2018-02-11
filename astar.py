@@ -97,5 +97,8 @@ def write_sol(maze,solution):
     file.close()
 
 maze = maze_parse("medmaze.txt")
-sol = astar(maze,(1,1), (21,59))
+#med is (1,1),(21, 59))
+#big is (29,1),(1, 79))
+#open is (1, 23),(18, 9))
+sol = astar(maze,(1,1),(21, 59))
 write_sol(maze,sol)

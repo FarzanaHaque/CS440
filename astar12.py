@@ -198,29 +198,29 @@ def astar(maze, start):
         nodes_ex += 1
 
         if maze[node[1]][node[2]+1]!='%' and (node[1],node[2]+1) not in visited:   #add right
-            visited.add((node[1], node[2])+1)
-			q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]+1)),  node[1], node[2]+1))
+            visited.add((node[1], node[2]+1))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]+1)),  node[1], node[2]+1))
             if((node[1], node[2]+1) not in parents.keys() or cost_map[parents[(node[1],node[2]+1)]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1],node[2]+1)]=(node[1], node[2])
                 cost_map[(node[1],node[2]+1)] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]+1][node[2]]!='%' and (node[1]+1,node[2]) not in visited:    #down
             visited.add((node[1]+1, node[2]))
-			q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]+1,node[2])), node[1]+1, node[2]))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]+1,node[2])), node[1]+1, node[2]))
             if((node[1]+1, node[2]) not in parents.keys() or cost_map[parents[(node[1]+1,node[2])]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1]+1,node[2])]=(node[1], node[2])
                 cost_map[(node[1]+1,node[2])] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]][node[2]-1]!='%' and (node[1],node[2]-1) not in visited:   #left
             visited.add((node[1], node[2]-1))
-			q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]-1)), node[1], node[2]-1))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1],node[2]-1)), node[1], node[2]-1))
             if((node[1], node[2]-1) not in parents.keys() or cost_map[parents[(node[1],node[2]-1)]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1],node[2]-1)]=(node[1], node[2])
                 cost_map[(node[1],node[2]-1)] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]-1][node[2]]!='%' and (node[1]-1,node[2]) not in visited:    #up
             visited.add((node[1]-1, node[2]))
-			q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]-1,node[2])), node[1]-1, node[2]))
+            q.put((g(cost_map[(node[1], node[2])]+1, maze, (node[1]-1,node[2])), node[1]-1, node[2]))
             if((node[1]-1, node[2]) not in parents.keys() or cost_map[parents[(node[1]-1,node[2])]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1]-1,node[2])]=(node[1], node[2])
                 cost_map[(node[1]-1,node[2])] = cost_map[(node[1], node[2])]+1
@@ -228,9 +228,9 @@ def astar(maze, start):
     print("cost is %d" % total_cost)
     print("Nodes Expanded is %d" % nodes_ex)
 
-maze = maze_parse("smallmaze12.txt")
+maze = maze_parse("bigmaze12.txt")
 # tiny is (4,4)
 # small is (1,7)
 # med is (8, 25)
-sol = astar(maze,(1,7))
+sol = astar(maze,(11,14))
 maze_print(maze)
