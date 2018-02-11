@@ -40,7 +40,7 @@ def astar(maze, start, end):
     nodes_ex = 0
     while (not q.empty()):
         node = q.get()
-        #print(node) # node is (cost, y, x)
+        #print(node) # node is (cost+man_dist, row, col)
         #visited.add((node[1], node[2]))
         
         if(node[0] >= min_cost):
