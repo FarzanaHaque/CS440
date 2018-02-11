@@ -40,37 +40,42 @@ def astar(maze, start, end):
     nodes_ex = 0
     while (not q.empty()):
         node = q.get()
-        #print(node) # node is (cost, y, x)
-        visited.add((node[1], node[2]))
+        #print(node) # node is (cost+man_dist, row, col)
+        #visited.add((node[1], node[2]))
         
-        if(node[0] >= min_cost):
+        if(node[0] >= min_cost):    #already found best solution
             break;
 
-        if maze[node[1]][node[2]]=='.':
+        if maze[node[1]][node[2]]=='.':    #found a solution
             if(node[0] < min_cost):
                 dest = node
                 min_cost = cost_map[(node[1], node[2])]
                 continue
         nodes_ex += 1
+		#make sure each node's parent is the least cost parent
         if maze[node[1]][node[2]+1]!='%' and (node[1],node[2]+1) not in visited:   #add right
+            visited.add((node[1],node[2]+1))
             q.put((g(node[1], node[2]+1, end[0], end[1], cost_map[(node[1], node[2])]+1),  node[1], node[2]+1))
             if((node[1], node[2]+1) not in parents.keys() or cost_map[parents[(node[1],node[2]+1)]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1],node[2]+1)]=(node[1], node[2])
                 cost_map[(node[1],node[2]+1)] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]+1][node[2]]!='%' and (node[1]+1,node[2]) not in visited:    #down
+            visited.add((node[1]+1,node[2]))
             q.put((g(node[1]+1, node[2], end[0], end[1], cost_map[(node[1], node[2])]+1), node[1]+1, node[2]))
             if((node[1]+1, node[2]) not in parents.keys() or cost_map[parents[(node[1]+1,node[2])]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1]+1,node[2])]=(node[1], node[2])
                 cost_map[(node[1]+1,node[2])] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]][node[2]-1]!='%' and (node[1],node[2]-1) not in visited:   #left
+            visited.add((node[1],node[2]-1))
             q.put((g(node[1], node[2]-1, end[0], end[1], cost_map[(node[1], node[2])]+1), node[1], node[2]-1))
             if((node[1], node[2]-1) not in parents.keys() or cost_map[parents[(node[1],node[2]-1)]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1],node[2]-1)]=(node[1], node[2])
                 cost_map[(node[1],node[2]-1)] = cost_map[(node[1], node[2])]+1
 
         if maze[node[1]-1][node[2]]!='%' and (node[1]-1,node[2]) not in visited:    #up
+            visited.add((node[1]-1,node[2]))
             q.put((g(node[1]-1, node[2], end[0], end[1], cost_map[(node[1], node[2])]+1), node[1]-1, node[2]))
             if((node[1]-1, node[2]) not in parents.keys() or cost_map[parents[(node[1]-1,node[2])]] > cost_map[(node[1], node[2])]+1):
                 parents[(node[1]-1,node[2])]=(node[1], node[2])
@@ -85,10 +90,11 @@ def astar(maze, start, end):
     print("cost is %d" % len(solution))
     print("nodes expanded is %d" % len(parents))
     print("new estimate is %d" % nodes_ex)
+    print("len of visited %d" % len(visited))
     return solution
 
 def write_sol(maze,solution):
-    file = open('med_astar_solution.txt','w')
+    file = open('solution.txt','w')
     for node in solution:
         maze[node[0]][node[1]] = '.'
     for line in maze:
