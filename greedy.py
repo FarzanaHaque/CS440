@@ -32,27 +32,31 @@ def greedy(maze, start, end):
     visited = set([(man_dist(end[0], end[1], start[0], start[1]), start[0], start[1])])
     dest = ()
     nodes_ex = 0
-    while q:
+    while not q.empty():
         node = q.get()
+        #visited.add(node)
         #print(node)
-        visited.add(node)
         if maze[node[1]][node[2]]=='.':
             dest = node
             break
         nodes_ex += 1
         if maze[node[1]][node[2]+1]!='%' and (man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1) not in visited:   #add right
+            visited.add((man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1))
             q.put((man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1))
             parents[(man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1)]=node
 
         if maze[node[1]+1][node[2]]!='%' and (man_dist(node[1]+1, node[2], end[0], end[1]), node[1]+1,node[2]) not in visited:    #down
+            visited.add((man_dist(node[1]+1, node[2], end[0], end[1]), node[1]+1,node[2]))
             q.put((man_dist(node[1]+1, node[2], end[0], end[1]), node[1]+1,node[2]))
             parents[(man_dist(node[1]+1, node[2], end[0], end[1]), node[1]+1,node[2])]=node
 
         if maze[node[1]][node[2]-1]!='%' and (man_dist(node[1], node[2]-1, end[0], end[1]), node[1],node[2]-1) not in visited:   #left
+            visited.add((man_dist(node[1], node[2]-1, end[0], end[1]), node[1],node[2]-1))
             q.put((man_dist(node[1], node[2]-1, end[0], end[1]), node[1],node[2]-1))
             parents[(man_dist(node[1], node[2]-1, end[0], end[1]), node[1],node[2]-1)]=node
 
         if maze[node[1]-1][node[2]]!='%' and (man_dist(node[1]-1, node[2], end[0], end[1]), node[1]-1,node[2]) not in visited:    #up
+            visited.add((man_dist(node[1]-1, node[2], end[0], end[1]), node[1]-1,node[2]))
             q.put((man_dist(node[1]-1, node[2], end[0], end[1]), node[1]-1,node[2]))
             parents[(man_dist(node[1]-1, node[2], end[0], end[1]), node[1]-1,node[2])]=node
 
@@ -65,10 +69,11 @@ def greedy(maze, start, end):
     print("cost is %d" % len(solution))
     print("nodes expanded is %d" % len(parents))
     print("new estimate is %d" % nodes_ex)
+    print("len of visited %d" %len(visited))
     return solution
 
 def write_sol(maze,solution):
-    file = open('med_greedy_solution.txt','w')
+    file = open('solution.txt','w')
     for node in solution:
         maze[node[1]][node[2]] = '.'
     for line in maze:
@@ -76,6 +81,6 @@ def write_sol(maze,solution):
         file.write("%s\n" %str)
     file.close()
 
-maze = maze_parse("medmaze.txt")
+maze = maze_parse("mediumMaze.txt")
 sol = greedy(maze,(1,1), (21,59))
 write_sol(maze,sol)
