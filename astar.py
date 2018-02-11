@@ -43,15 +43,16 @@ def astar(maze, start, end):
         #print(node) # node is (cost+man_dist, row, col)
         #visited.add((node[1], node[2]))
         
-        if(node[0] >= min_cost):
+        if(node[0] >= min_cost):    #already found best solution
             break;
 
-        if maze[node[1]][node[2]]=='.':
+        if maze[node[1]][node[2]]=='.':    #found a solution
             if(node[0] < min_cost):
                 dest = node
                 min_cost = cost_map[(node[1], node[2])]
                 continue
         nodes_ex += 1
+		#make sure each node's parent is the least cost parent
         if maze[node[1]][node[2]+1]!='%' and (node[1],node[2]+1) not in visited:   #add right
             visited.add((node[1],node[2]+1))
             q.put((g(node[1], node[2]+1, end[0], end[1], cost_map[(node[1], node[2])]+1),  node[1], node[2]+1))

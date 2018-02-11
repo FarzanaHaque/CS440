@@ -26,12 +26,12 @@ def man_dist(x1, y1, x2, y2):
     return abs(abs(x2)-abs(x1)) + abs(abs(y2) - abs(y1))
 
 def greedy(maze, start, end):
-    q = queue.PriorityQueue()
+    q = queue.PriorityQueue()            #nodes include man_dist and coordinates 
     q.put((man_dist(end[0], end[1], start[0], start[1]), start[0], start[1]))
     parents = {}
     visited = set([(man_dist(end[0], end[1], start[0], start[1]), start[0], start[1])])
     dest = ()
-    nodes_ex = 0
+    #nodes_ex = 0
     while not q.empty():
         node = q.get()
         #visited.add(node)
@@ -39,7 +39,7 @@ def greedy(maze, start, end):
         if maze[node[1]][node[2]]=='.':
             dest = node
             break
-        nodes_ex += 1
+        #nodes_ex += 1
         if maze[node[1]][node[2]+1]!='%' and (man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1) not in visited:   #add right
             visited.add((man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1))
             q.put((man_dist(node[1], node[2]+1, end[0], end[1]), node[1],node[2]+1))
@@ -67,8 +67,8 @@ def greedy(maze, start, end):
         solution.append(curr)
 
     print("cost is %d" % len(solution))
-    print("nodes expanded is %d" % len(parents))
-    print("new estimate is %d" % nodes_ex)
+    #print("nodes expanded is %d" % len(parents))
+    #print("new estimate is %d" % nodes_ex)
     print("len of visited %d" %len(visited))
     return solution
 

@@ -26,18 +26,18 @@ def maze_print(maze):
 #print(maze[1][6])
 
 def bfs(maze,start):
-	q = queue.Queue()
+	q = queue.Queue()               #nodes are (row,col)
 	q.put(start)
 	parents = {}
 	visited = set([start])
 	dest = ()
-	nodes_ex = 0
+	#nodes_ex = 0
 	while q:
 		node = q.get()
-		if maze[node[0]][node[1]]=='.':
+		if maze[node[0]][node[1]]=='.':      #found solution
 			dest = node
 			break
-		nodes_ex += 1
+		#nodes_ex += 1
 		if maze[node[0]][node[1]+1]!='%' and (node[0],node[1]+1) not in visited:   #add right
 			visited.add((node[0],node[1]+1))
 			q.put((node[0],node[1]+1))
@@ -65,8 +65,8 @@ def bfs(maze,start):
 		solution.append(curr)
 
 	print("cost is %d" % len(solution))
-	print("nodes expanded is %d" % len(parents))
-	print("new estimate is %d" % nodes_ex)
+	#print("nodes expanded is %d" % len(parents))
+	#print("new estimate is %d" % nodes_ex)
 	print("len of visited is %d" %len(visited))
 	return solution
 
