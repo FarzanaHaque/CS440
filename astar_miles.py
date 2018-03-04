@@ -14,7 +14,7 @@ def miles_so_far(str):
 			mi += miles_map[p[::-1]]
 	return mi
 	
-def alt_dist_est(str):
+def alt_dist_est(str):     #because E doesn't obey triangle rule
 	if len(str)==1:
 		return 0
 	mi = 0
@@ -42,8 +42,6 @@ def avg_miles_remaining(str,widgets):
 			if w[ind]==s:
 				tot-=1
 				ind+=1
-		"""if tot==len(w):
-			rem += miles_so_far(w)"""
 		if tot > 0:
 			rem += alt_dist_est(s[-1]+w[ind:])
 			
