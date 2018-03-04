@@ -13,6 +13,23 @@ def miles_so_far(str):
 		else:
 			mi += miles_map[p[::-1]]
 	return mi
+	
+def alt_dist_est(str):
+	if len(str)==1:
+		return 0
+	mi = 0
+	for i in range(0,len(str)-1):
+		p = str[i:i+2]
+		if p not in miles_map:
+			p = p[::-1]
+		if 'E' not in p:
+			if miles_map[p[0]+'E']+miles_map[p[1]+'E'] < miles_map[p]:
+				mi += miles_map[p[0]+'E']+miles_map[p[1]+'E']
+			else:
+				mi += miles_map[p]
+		else:
+			mi += miles_map[p]
+	return mi
 
 def avg_miles_remaining(str,widgets):
 	rem=0
@@ -25,8 +42,10 @@ def avg_miles_remaining(str,widgets):
 			if w[ind]==s:
 				tot-=1
 				ind+=1
+		"""if tot==len(w):
+			rem += miles_so_far(w)"""
 		if tot > 0:
-			rem += miles_so_far(s[-1]+w[ind:])
+			rem += alt_dist_est(s[-1]+w[ind:])
 			
 	return rem / len(widgets)
 
@@ -76,4 +95,6 @@ def astar_miles(widgets):
 	return final
 		
 widg = ("AEDCA","BEACD","BABCE","DADBD","BECBD")
-print(astar_miles(widg))	
+sol = astar_miles(widg)
+print(sol)
+print(miles_so_far(sol))	

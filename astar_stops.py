@@ -37,28 +37,29 @@ def astar_stops(widgets):
 				min_len=node[0]
 				continue
 		
-		if (node[1]+"A") not in visited:
+		if (node[1][-1]!="A") and (node[1]+"A") not in visited:
 			q.put((h_g(node[1]+"A",widgets),node[1]+"A"))
 			visited.add(node[1]+"A")
 		
-		if (node[1]+"B") not in visited:
+		if (node[1][-1]!="B") and (node[1]+"B") not in visited:
 			q.put((h_g(node[1]+"B",widgets),node[1]+"B"))
 			visited.add(node[1]+"B")
 		
-		if (node[1]+"C") not in visited:
+		if (node[1][-1]!="C")and(node[1]+"C") not in visited:
 			q.put((h_g(node[1]+"C",widgets),node[1]+"C"))
 			visited.add(node[1]+"C")
 		
-		if (node[1]+"D") not in visited:
+		if (node[1][-1]!="D")and(node[1]+"D") not in visited:
 			q.put((h_g(node[1]+"D",widgets),node[1]+"D"))
 			visited.add(node[1]+"D")
 		
-		if (node[1]+"E") not in visited:
+		if (node[1][-1]!="E")and(node[1]+"E") not in visited:
 			q.put((h_g(node[1]+"E",widgets),node[1]+"E"))
 			visited.add(node[1]+"E")
 		
 	return final
 		
 widg = ("AEDCA","BEACD","BABCE","DADBD","BECBD")
-print(astar_stops(widg))	
-		
+sol = astar_stops(widg)
+print(sol)	
+print(len(sol))	
