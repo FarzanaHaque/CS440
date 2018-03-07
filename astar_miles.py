@@ -1,4 +1,5 @@
 import queue
+import random
 
 miles_map = {"AB":1064,"AC":673,"AD":1401,"AE":277,"BC":958,"BD":1934,"BE":337,"CD":1001,"CE":399,"DE":387}
 
@@ -49,6 +50,7 @@ def avg_miles_remaining(str,widgets):
 
 def h_g(str,widgets):
 	return avg_miles_remaining(str,widgets)+miles_so_far(str)
+	#return miles_so_far(str)   #Dijkstra's Algorithm
 
 def astar_miles(widgets):
 	q = queue.PriorityQueue()
@@ -89,10 +91,41 @@ def astar_miles(widgets):
 		if (node[1][-1]!="E") and (node[1]+"E") not in visited:
 			q.put((h_g(node[1]+"E",widgets),node[1]+"E"))
 			visited.add(node[1]+"E")
-		
+	
+	print("nodes expanded is %d" %len(visited))
 	return final
 		
-widg = ("AEDCA","BEACD","BABCE","DADBD","BECBD")
+#widg = ("AEDCA","BEACD","BABCE","DADBD","BECBD")
+#sol = astar_miles(widg)
+#print(sol)
+#print(miles_so_far(sol))
+
+def int_to_char(i):
+	if i==0:
+		return "A"
+	elif i==1:
+		return "B"
+	elif i==2:
+		return "C"
+	elif i==3:
+		return "D"
+	return "E"
+
+def generate_widg(n):
+	widg = []
+	for i in range(0,5):
+		chars = []
+		for j in range(0,n):
+			r = random.randint(0,4)
+			c = int_to_char(r)
+			while j>0 and c==chars[j-1]:
+				r = random.randint(0,4)
+				c = int_to_char(r)
+			chars.append(c)
+		widg.append(chars)
+	return (''.join(widg[0]),''.join(widg[1]),''.join(widg[2]),''.join(widg[3]),''.join(widg[4]))
+	
+widg = generate_widg(8)
 sol = astar_miles(widg)
 print(sol)
-print(miles_so_far(sol))	
+print(miles_so_far(sol))
