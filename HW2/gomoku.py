@@ -21,6 +21,25 @@ class Board:
                 print(str(self.field[i][j]) + " ", end="")
             print("")
 
+    def get_all_nodes(self, cid):
+        output = []
+        for i in range(0, 7):
+            for j in range(0, 7):
+                if self.field[i][j] == cid:
+                    output.append((i, j))
+        return output
+
+    def check_full(self):
+        full = True
+        for i in range(0, 7):
+            for j in range(0, 7):
+                if self.field[i][j] == '.':
+                    full = False
+        if full:
+            self.winner = "!"
+
+        return full
+
 
 class ReflexAgent:
     mid = ''
@@ -98,57 +117,63 @@ class ReflexAgent:
             found_best = True
             for count in range(1, 2 + 1):
                 cand = (s[0] - count, s[1])
-                if cand not in my_stones:
+                if cand not in my_stones or s[0] - count < 0:
                     found_best = False
                     break
             if found_best:
-                if s[0] + 1 < 6 and s[0] - 3 > 0:
-                    head1 = (s[0] + 1, s[1])
-                    head2 = (s[0] - 3, s[1])
-                    if b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
-                        return head1, head2
+                head1 = (s[0] + 1, s[1])
+                head2 = (s[0] - 3, s[1])
+                if s[0] + 1 < 6 and s[0] - 3 > 0 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
+                    # normal case not at beginning or end
+                    return head1, head2
+                elif s[0] == 6 and b.field[head2[0]][head2[1]] == ".":
+                    # at very bottom, top can be valid
+                    return head2, head1
 
             #check down
             found_best = True
             for count in range(1, 2 + 1):
                 cand = (s[0] + count, s[1])
-                if cand not in my_stones:
+                if cand not in my_stones or s[0] + count > 6:
                     found_best = False
                     break
             if found_best:
-                if s[0] - 1 > 0 and s[0] + 3 < 6:
-                    head1 = (s[0] - 1, s[1])
-                    head2 = (s[0] + 3, s[1])
-                    if b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
-                        return head2, head1
+                head1 = (s[0] - 1, s[1])
+                head2 = (s[0] + 3, s[1])
+                if s[0] - 1 > 0 and s[0] + 3 < 6 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
+                    return head2, head1
+                elif s[0] == 0 and b.field[head2[0]][head2[1]] == ".":
+                    return head2, head1
 
             #check left
             found_best = True
             for count in range(1, 2 + 1):
                 cand = (s[0], s[1] - count)
-                if cand not in my_stones:
+                if cand not in my_stones or s[1] - count < 0:
                     found_best = False
                     break
             if found_best:
-                if s[1] + 1 < 6 and s[1] - 3 > 0:
-                    head1 = (s[0], s[1] + 1)
-                    head2 = (s[0], s[1] - 3)
-                    if b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
-                        return head1, head2
+                head1 = (s[0], s[1] + 1)
+                head2 = (s[0], s[1] - 3)
+                if s[1] + 1 < 6 and s[1] - 3 > 0 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
+                    return head1, head2
+                elif s[1] == 6 and b.field[head2[0]][head2[1]] == ".":
+                    return head2, head1
 
             #check right
             found_best = True
             for count in range(1, 2 + 1):
                 cand = (s[0], s[1] + count)
-                if cand not in my_stones:
+                if cand not in my_stones or s[1] + count > 6:
                     found_best = False
                     break
             if found_best:
-                if s[1] - 1 > 0 and s[1] + 3 < 6:
-                    head1 = (s[0], s[1] - 1)
-                    head2 = (s[0], s[1] + 3)
-                    if b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
-                        return head2, head1
+                head1 = (s[0], s[1] - 1)
+                head2 = (s[0], s[1] + 3)
+                if s[1] - 1 > 0 and s[1] + 3 < 6 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
+                    return head2, head1
+                elif s[1] == 0 and b.field[head2[0]][head2[1]] == ".":
+                    return head2, head1
         return -420, -420
 
     def find_all_win_segs(self, b, oid):
@@ -168,15 +193,15 @@ class ReflexAgent:
                 if good_win:
                     win_segs.append(win_seg)
 
-        # look at downward segs
-        for i in range(0, 3):
+        # look at upward segs
+        for i in range(4, 7):
             for j in range(0, 7):
                 # attempt to build win seg
                 win_seg = []
                 good_win = True
                 for count in range(0, 4 + 1):
-                    if b.field[i + count][j] != oid:
-                        win_seg.append((i + count, j))
+                    if b.field[i - count][j] != oid:
+                        win_seg.append((i - count, j))
                     else:
                         good_win = False
                         break
@@ -188,6 +213,14 @@ class ReflexAgent:
     def win_seg_move(self, b, mid, oid):
         win_segs = self.find_all_win_segs(b, oid)
         win_seg_count = {}
+
+        if len(win_segs) == 0:
+            # catch if no more winning segments, just play down left most valid
+            all_empty = b.get_all_nodes('.')
+            leftmost = min(all_empty, key=lambda t: t[1])
+            leftmostvalues = [y for y in all_empty if y[1] == leftmost[1]]
+            downleftmost = max(leftmostvalues, key=lambda t: t[0])
+            return downleftmost
 
         for ws in win_segs:
             score = 0
@@ -210,6 +243,9 @@ class ReflexAgent:
         return -420, -420
 
     def make_move(self, b):
+        if b.check_full():
+            return
+
         if b.turn_number == 1:
             pass # can add a random later here for strategies
         # Part 1
