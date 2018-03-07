@@ -36,10 +36,12 @@ class Board:
                 if self.field[i][j] == '.':
                     full = False
         if full:
-            self.winner = "!"
+            self.winner = "&"
 
         return full
 
+    def check_winner(self):
+        pass
 
 class ReflexAgent:
     mid = ''
@@ -58,6 +60,7 @@ class ReflexAgent:
         return my_stones
 
     def instant_win(self, b, cid):
+        # Note: this does not check for a "R R . R R" win condition. Might need too
         my_stones = self.get_my_stones(b, cid)
         for s in my_stones:
             # check up
@@ -123,7 +126,7 @@ class ReflexAgent:
             if found_best:
                 head1 = (s[0] + 1, s[1])
                 head2 = (s[0] - 3, s[1])
-                if s[0] + 1 < 6 and s[0] - 3 > 0 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
+                if s[0] + 1 <= 6 and s[0] - 3 >= 0 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
                     # normal case not at beginning or end
                     return head1, head2
                 elif s[0] == 6 and b.field[head2[0]][head2[1]] == ".":
@@ -140,7 +143,7 @@ class ReflexAgent:
             if found_best:
                 head1 = (s[0] - 1, s[1])
                 head2 = (s[0] + 3, s[1])
-                if s[0] - 1 > 0 and s[0] + 3 < 6 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
+                if s[0] - 1 >= 0 and s[0] + 3 <= 6 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
                     return head2, head1
                 elif s[0] == 0 and b.field[head2[0]][head2[1]] == ".":
                     return head2, head1
@@ -155,7 +158,7 @@ class ReflexAgent:
             if found_best:
                 head1 = (s[0], s[1] + 1)
                 head2 = (s[0], s[1] - 3)
-                if s[1] + 1 < 6 and s[1] - 3 > 0 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
+                if s[1] + 1 <= 6 and s[1] - 3 >= 0 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
                     return head1, head2
                 elif s[1] == 6 and b.field[head2[0]][head2[1]] == ".":
                     return head2, head1
@@ -170,7 +173,7 @@ class ReflexAgent:
             if found_best:
                 head1 = (s[0], s[1] - 1)
                 head2 = (s[0], s[1] + 3)
-                if s[1] - 1 > 0 and s[1] + 3 < 6 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
+                if s[1] - 1 >= 0 and s[1] + 3 <= 6 and b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
                     return head2, head1
                 elif s[1] == 0 and b.field[head2[0]][head2[1]] == ".":
                     return head2, head1
@@ -235,9 +238,25 @@ class ReflexAgent:
         leftmostvalues = [y for y in win_seg_best if y[0][1] == leftmost[1]]
         downleftmost = max(leftmostvalues, key=lambda t: t[0])
 
-        for t in downleftmost:
-            if b.field[t[0]][t[1]] == '.':
-                return t
+        # leftdownmostplace = ()
+        # for count in downleftmost:
+        #     if b.field[t[0]][t[1]] == mid:
+        #         leftdownmostplace = t
+
+        for count in range(0, 5):
+            cand = downleftmost[count]
+            candprev = (-420, -420)
+            if count > 0:
+                candprev = downleftmost[count-1]
+            candnext = (-420, -420)
+            if count < 4:
+                candnext = downleftmost[count+1]
+            if b.field[cand[0]][cand[1]] == '.' and (
+                    (candprev != (-420, -420) and b.field[candprev[0]][candprev[1]] == mid) or
+                    (candnext != (-420, -420) and b.field[candnext[0]][candnext[1]] == mid)):
+                return cand
+        return downleftmost[0]
+
 
         print("Error: win_seg_move has found a win seg that has no valid places")
         return -420, -420
@@ -272,7 +291,7 @@ class ReflexAgent:
         b.field[best_move[0]][best_move[1]] = self.mid
         return
 
-def main():
+def normal_run():
     b = Board()
     print("Initial State")
     print("------------------------------")
@@ -291,6 +310,34 @@ def main():
     print("Finished! Winner is " + b.winner)
     print("------------------------------")
     b.print_board()
+
+def two_one_run():
+    b = Board()
+    b.field[1][1] = 'R'
+    b.field[5][5] = 'B'
+    b.turn_number = 2
+    print("Initial State")
+    print("------------------------------")
+    b.print_board()
+    print("")
+    player1 = ReflexAgent('R', 'B')
+    player2 = ReflexAgent('B', 'R')
+    while b.winner == '.':
+        if b.turn_number == 5:
+            print("")
+        print("Turn " + str(b.turn_number))
+        print("------------------------------")
+        player1.make_move(b)
+        player2.make_move(b)
+        b.print_board()
+        b.turn_number += 1
+        print("")
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
+
+def main():
+    two_one_run()
 
 
 if __name__ == "__main__":
