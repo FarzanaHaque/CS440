@@ -3,7 +3,7 @@
 
 
 class Board:
-    field = []
+    field = []  # the game field
     turn_number = 1
     winner = '.'
 
@@ -22,6 +22,11 @@ class Board:
             print("")
 
     def get_all_nodes(self, cid):
+        """
+        Gets all the nodes that match a cid
+        :param cid: the current id
+        :return: a list of tuples that match
+        """
         output = []
         for i in range(0, 7):
             for j in range(0, 7):
@@ -30,6 +35,10 @@ class Board:
         return output
 
     def check_full(self):
+        """
+        Checks if the board is full. If it is, then return True and set the winner to "&"
+        :return: a bool if it is full or not
+        """
         full = True
         for i in range(0, 7):
             for j in range(0, 7):
@@ -43,15 +52,22 @@ class Board:
     def check_winner(self):
         pass
 
+
 class ReflexAgent:
-    mid = ''
-    oid = ''
+    mid = ''  # My ID
+    oid = ''  # Opponents ID
 
     def __init__(self, ID, oID):
         self.mid = ID
         self.oid = oID
 
     def get_my_stones(self, b, cid):
+        """
+        Gets all stones that match the current id
+        :param b: board
+        :param cid: current id
+        :return: list of tuples (column, row) that matches the cid
+        """
         my_stones = []
         for i in range(0, 7):
             for j in range(0, 7):
@@ -60,8 +76,15 @@ class ReflexAgent:
         return my_stones
 
     def instant_win(self, b, cid):
+        """
+        Checks if there's a single move that wins
+        :param b: board
+        :param cid: current id
+        :return: (-420, -420) if there is none, the tuple if there is such a move
+        """
         # Note: this does not check for a "R R . R R" win condition. Might need too
         my_stones = self.get_my_stones(b, cid)
+        # Check if there's a 4 in a row with an open slot
         for s in my_stones:
             # check up
             found_best = True
@@ -114,6 +137,13 @@ class ReflexAgent:
         return -420, -420
 
     def find_triple_chain_empty(self, b, cid):
+        """
+        For step 3 of the prompt, looks for a chain of three rocks that matches the cid with open ends
+        If its on the edge, only consider the end that's on the board
+        :param b: board
+        :param cid: current id
+        :return: the left-down most chain of three that matches the cid
+        """
         my_stones = self.get_my_stones(b, cid)
         for s in my_stones:
             #check up
@@ -180,6 +210,12 @@ class ReflexAgent:
         return -420, -420
 
     def find_all_win_segs(self, b, oid):
+        """
+        For step 4, gets all possible winning segments: blocks of 5 where there isn't my opponents stone
+        :param b: board
+        :param oid: opponenets id
+        :return: a list of lists: the sublists hold 5 tuples that match that winning segment
+        """
         win_segs = []
         # look at right segs
         for i in range(0, 7):
@@ -214,6 +250,15 @@ class ReflexAgent:
         return win_segs
 
     def win_seg_move(self, b, mid, oid):
+        """
+        For step 4, calculates the best move to make with the step 4 algorithm.
+        Find the down left most position to place a stone that can still win.
+        If there are no more winning positions, then returns the down left most valid position.
+        :param b: board
+        :param mid: my id
+        :param oid: opponents id
+        :return: the move
+        """
         win_segs = self.find_all_win_segs(b, oid)
         win_seg_count = {}
 
@@ -238,11 +283,6 @@ class ReflexAgent:
         leftmostvalues = [y for y in win_seg_best if y[0][1] == leftmost[1]]
         downleftmost = max(leftmostvalues, key=lambda t: t[0])
 
-        # leftdownmostplace = ()
-        # for count in downleftmost:
-        #     if b.field[t[0]][t[1]] == mid:
-        #         leftdownmostplace = t
-
         for count in range(0, 5):
             cand = downleftmost[count]
             candprev = (-420, -420)
@@ -257,11 +297,12 @@ class ReflexAgent:
                 return cand
         return downleftmost[0]
 
-
-        print("Error: win_seg_move has found a win seg that has no valid places")
-        return -420, -420
-
     def make_move(self, b):
+        """
+        Top level function. Make a move following the rules given
+        :param b: board
+        :return: None, modifies the board's field
+        """
         if b.check_full():
             return
 
@@ -291,6 +332,7 @@ class ReflexAgent:
         b.field[best_move[0]][best_move[1]] = self.mid
         return
 
+
 def normal_run():
     b = Board()
     print("Initial State")
@@ -310,6 +352,7 @@ def normal_run():
     print("Finished! Winner is " + b.winner)
     print("------------------------------")
     b.print_board()
+
 
 def two_one_run():
     b = Board()
@@ -335,6 +378,7 @@ def two_one_run():
     print("Finished! Winner is " + b.winner)
     print("------------------------------")
     b.print_board()
+
 
 def main():
     two_one_run()
