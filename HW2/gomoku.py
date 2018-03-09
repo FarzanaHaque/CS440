@@ -388,6 +388,26 @@ class ReflexAgent:
 
 
 class MiniMaxAgent:
+    mid = ''  # My ID
+    oid = ''  # Opponents ID
+
+    def __init__(self, ID, oID):
+        self.mid = ID
+        self.oid = oID
+
+    def make_move(self, b):
+        #build my minimax tree
+        root = self.init_tree(b, self.mid, self.oid)
+
+        #fill all my nodes with values
+        self.evaluate(root)
+        
+        #get the optimal move in this case
+        best_move = self.return_best_move(root)
+
+        #make my move
+        b.field[best_move[0]][best_move[1]] = self.mid
+
 
     def init_tree(self, b, mid, oid):
         # initialize the depth of 0
@@ -443,16 +463,38 @@ class MiniMaxAgent:
 
         return level_0_node
 
+
     def eval_function(self, field):
         return 0
 
-    def search(self, level_0_node):
-        #evaluate all states at depth 3
+
+    def evaluate(self, level_0_node):
+        #evaluate all states at depth 3 (state)
         for level_1_node in level_0_node['children']:
             for level_2_node in level_1_node['children']:
                 for level_3_node in level_2_node['children']:
                     level_3_node['value'] = eval_function[level_3_node['initial_board']]
 
+        #evaluate best states at depth 2 (max)
+        for level_1_node in level_0_node['children']:
+            for level_2_node in level_1_node['children']:
+                level_2_node['value'] = max(level_2_node['children'])
+
+        #evaluate best states at depth 1 (min)
+        for level_1_node in level_0_node['children']:
+            level_1_node['value'] = min(level_1_node['children'])
+
+        #evaluate best states at depth 0 (max)
+        level_0_node['value'] = max(level_0_node['children'])
+
+
+    def return_best_move(self, level_0_node):
+        #find any move that matches the best move
+        best_value = level_0_node['value']
+
+        best_children = [child for child in level_0_node['children'] if child['value'] == best_value]
+
+        return best_children[0]
 
 
     def get_all_moves(self, field):
