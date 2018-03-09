@@ -4,14 +4,19 @@
 
 class Board:
     field = []  # the game field
+    field_watcher = []
     turn_number = 1
     winner = '.'
+    red_ticker = 'a'
+    blue_ticker = 'b'
 
     def __init__(self):
         for i in range(0, 7):
             self.field.append([0, 0, 0, 0, 0, 0, 0])
+            self.field_watcher.append([0, 0, 0, 0, 0, 0, 0])
             for j in range(0, 7):
                 self.field[i][j] = '.'
+                self.field_watcher[i][j] = '.'
 
     def print_board(self):
         print("  0 1 2 3 4 5 6")
@@ -52,6 +57,24 @@ class Board:
     def check_winner(self):
         pass
 
+    def update_field(self):
+        for i in range(0, 7):
+            for j in range(0, 7):
+                if (self.field[i][j] == 'R' or self.field[i][j] == 'B') and (self.field_watcher[i][j] == '.'):
+                    if self.field[i][j] == 'R':
+                        self.field_watcher[i][j] = self.red_ticker
+                        self.red_ticker = (chr(ord(self.red_ticker)+1))
+                    elif self.field[i][j] == 'B':
+                        self.field_watcher[i][j] = self.blue_ticker
+                        self.blue_ticker = (chr(ord(self.blue_ticker) + 1))
+
+    def print_watcher(self):
+        print("  0 1 2 3 4 5 6")
+        for i in range(0, 7):
+            print(str(i) + " ", end="")
+            for j in range(0, 7):
+                print(str(self.field_watcher[i][j]) + " ", end="")
+            print("")
 
 class ReflexAgent:
     mid = ''  # My ID
@@ -75,14 +98,13 @@ class ReflexAgent:
                     my_stones.append((i, j))
         return my_stones
 
-    def instant_win(self, b, cid):
+    def instant_win(self, b, cid, oid):
         """
         Checks if there's a single move that wins
         :param b: board
         :param cid: current id
         :return: (-420, -420) if there is none, the tuple if there is such a move
         """
-        # Note: this does not check for a "R R . R R" win condition. Might need too
         my_stones = self.get_my_stones(b, cid)
         # Check if there's a 4 in a row with an open slot
         for s in my_stones:
@@ -133,6 +155,37 @@ class ReflexAgent:
                 best = (s[0], s[1] + 4)
                 if s[1] + 4 <= 6 and b.field[best[0]][best[1]] == ".":
                     return best
+
+        # Check for a "R R . R R" win condition.
+        win_segs = self.find_all_win_segs(b, oid)
+        win_seg_count = {}
+
+        if len(win_segs) == 0:
+            # catch if no more winning segments, just play down left most valid
+            all_empty = b.get_all_nodes('.')
+            leftmost = min(all_empty, key=lambda t: t[1])
+            leftmostvalues = [y for y in all_empty if y[1] == leftmost[1]]
+            downleftmost = max(leftmostvalues, key=lambda t: t[0])
+            return -420, -420
+
+        for ws in win_segs:
+            score = 0
+            for t in ws:
+                if b.field[t[0]][t[1]] == cid:
+                    score += 1
+            win_seg_count[tuple(ws)] = score
+
+        best_score = max(win_seg_count.values())
+
+        if best_score == 4:
+            win_seg_best = [y for y in win_seg_count.keys() if win_seg_count[y] == best_score]
+            leftmost = min(win_seg_best, key=lambda t: t[1])[0]
+            leftmostvalues = [y for y in win_seg_best if y[0][1] == leftmost[1]]
+            downleftmost = max(leftmostvalues, key=lambda t: t[0])
+
+            for pos in downleftmost:
+                if b.field[pos[0]][pos[1]] == '.':
+                    return pos
 
         return -420, -420
 
@@ -309,14 +362,14 @@ class ReflexAgent:
         if b.turn_number == 1:
             pass # can add a random later here for strategies
         # Part 1
-        best_move = self.instant_win(b, self.mid)
+        best_move = self.instant_win(b, self.mid, self.oid)
         if best_move != (-420, -420):
             b.field[best_move[0]][best_move[1]] = self.mid
             b.winner = self.mid
             return
 
         # Part 2
-        best_move = self.instant_win(b, self.oid)
+        best_move = self.instant_win(b, self.oid, self.mid)
         if best_move != (-420, -420):
             b.field[best_move[0]][best_move[1]] = self.mid
             return
@@ -358,6 +411,10 @@ def two_one_run():
     b = Board()
     b.field[1][1] = 'R'
     b.field[5][5] = 'B'
+    b.field_watcher[1][1] = 'a'
+    b.field_watcher[5][5] = 'A'
+    b.red_ticker = 'b'
+    b.blue_ticker = 'B'
     b.turn_number = 2
     print("Initial State")
     print("------------------------------")
@@ -369,15 +426,22 @@ def two_one_run():
         if b.turn_number == 5:
             print("")
         print("Turn " + str(b.turn_number))
-        print("------------------------------")
+        print("Normal------------------------")
         player1.make_move(b)
         player2.make_move(b)
         b.print_board()
+        print("")
+        print("Watcher-----------------------")
+        b.print_watcher()
+        b.update_field()
         b.turn_number += 1
         print("")
     print("Finished! Winner is " + b.winner)
-    print("------------------------------")
+    print("Normal------------------------")
     b.print_board()
+    print("")
+    print("Watcher-----------------------")
+    b.print_watcher()
 
 
 def main():
