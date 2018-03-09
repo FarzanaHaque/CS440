@@ -76,6 +76,7 @@ class Board:
                 print(str(self.field_watcher[i][j]) + " ", end="")
             print("")
 
+
 class ReflexAgent:
     mid = ''  # My ID
     oid = ''  # Opponents ID
@@ -384,6 +385,88 @@ class ReflexAgent:
         best_move = self.win_seg_move(b, self.mid, self.oid)
         b.field[best_move[0]][best_move[1]] = self.mid
         return
+
+
+class MiniMaxAgent:
+
+    def init_tree(self, b, mid, oid):
+        # initialize the depth of 0
+        level_0_field = copy.deepcopy(b.field)
+        level_0_node = {'type': 'max',
+                        'mid': mid,
+                        'children': [],
+                        'value': 0,
+                        'initial_board': level_0_field,
+                        'move': (-420, -420)}
+
+        # initialize the depth of 1
+        moves = get_all_moves(level_0_node['initial_board'])
+        for m in moves:
+            new_field = copy.deepcopy(level_0_node['initial_board'])
+            new_field[m[0]][m[1]] = level_0_node['mid']
+            new_node = {'type': 'min',
+                        'mid': oid,
+                        'children': [],
+                        'value': 0,
+                        'initial_board': new_field,
+                        'move': m}
+            level_0_node['children'].append(new_node)
+
+        # initialize the depth of 2
+        for child in level_0_node['children']:
+            moves = get_all_moves(child['initial_board'])
+            for m in moves:
+                new_field = copy.deepcopy(child['initial_board'])
+                new_field[m[0]][m[1]] = child['mid']
+                new_node = {'type': 'max',
+                            'mid': mid,
+                            'children': [],
+                            'value': 0,
+                            'initial_board': new_field,
+                            'move': m}
+                child['children'].append(new_node)
+
+        # initialize the depth of 3
+        for c in level_0_node['children']:
+            for child in c['children']:
+                moves = get_all_moves(child['initial_board'])
+                for m in moves:
+                    new_field = copy.deepcopy(child['initial_board'])
+                    new_field[m[0]][m[1]] = child['mid']
+                    new_node = {'type': 'state',
+                                'mid': '@',
+                                'children': [],
+                                'value': 0,
+                                'initial_board': new_field,
+                                'move': m}
+                    child['children'].append(new_node)
+
+        return level_0_node
+
+    def eval_function(self, field):
+        return 0
+
+    def search(self, level_0_node):
+        #evaluate all states at depth 3
+        for level_1_node in level_0_node['children']:
+            for level_2_node in level_1_node['children']:
+                for level_3_node in level_2_node['children']:
+                    level_3_node['value'] = eval_function[level_3_node['initial_board']]
+
+
+
+    def get_all_moves(self, field):
+        """
+        Gets all the nodes that are available
+        :param cid: the current id
+        :return: a list of tuples that match
+        """
+        output = []
+        for i in range(0, 7):
+            for j in range(0, 7):
+                if self.field[i][j] == '.':
+                    output.append((i, j))
+        return output
 
 
 def normal_run():
