@@ -1,6 +1,9 @@
 import copy
+import random
 
 """
+This file is for part 2 of HW 2 of CS 440 Spring 2018.
+Creates and runs AI actors in a simulation of Gomoku
 Note all accesses are all in (y, x)
 
 """
@@ -638,32 +641,41 @@ class MiniMaxAgent:
         return level_0_node
 
     def eval_function(self, field):
-        return 0
+        return random.randint(-100, 100)
 
     def evaluate(self, level_0_node):
         # evaluate all states at depth 3 (state)
         for level_1_node in level_0_node['children']:
             for level_2_node in level_1_node['children']:
                 for level_3_node in level_2_node['children']:
-                    level_3_node['value'] = self.eval_function[level_3_node['initial_board']]
+                    level_3_node['value'] = self.eval_function(level_3_node['initial_board'])
 
         # evaluate best states at depth 2 (max)
         for level_1_node in level_0_node['children']:
             for level_2_node in level_1_node['children']:
-                level_2_node['value'] = max(level_2_node['children'])
+                values = []
+                for level_3_node in level_2_node['children']:
+                    values.append(level_3_node['value'])
+                level_2_node['value'] = max(values)
 
         # evaluate best states at depth 1 (min)
         for level_1_node in level_0_node['children']:
-            level_1_node['value'] = min(level_1_node['children'])
+            values = []
+            for level_2_node in level_1_node['children']:
+                values.append(level_2_node['value'])
+            level_1_node['value'] = min(values)
 
         # evaluate best states at depth 0 (max)
-        level_0_node['value'] = max(level_0_node['children'])
+        values = []
+        for level_1_node in level_0_node['children']:
+            values.append(level_1_node['value'])
+        level_0_node['value'] = max(values)
 
     def return_best_move(self, level_0_node):
         # find any move that matches the best move
         best_value = level_0_node['value']
         best_children = [child for child in level_0_node['children'] if child['value'] == best_value]
-        return best_children[0]
+        return best_children[0]['move']
 
     def get_all_moves(self, field):
         """
@@ -742,6 +754,34 @@ def two_one_run():
     print("")
     print("Watcher-----------------------")
     b.print_watcher()
+
+
+def minimax_vs_reflex_run():
+    # Initialize board
+    b = Board()
+    print("Initial State")
+    print("------------------------------")
+    b.print_board()
+    print("")
+
+    # Load Agents
+    player1 = MiniMaxAgent('R', 'B')
+    player2 = ReflexAgent('B', 'R')
+
+    # Play
+    while b.winner == '.':
+        print("Turn " + str(b.turn_number))
+        print("------------------------------")
+        player1.make_move(b)
+        player2.make_move(b)
+        b.print_board()
+        b.turn_number += 1
+        print("")
+
+    # Print Winner
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
 
 
 def play_against_reflex():
@@ -859,7 +899,8 @@ def play_against_reflex():
 def main():
     #normal_run()
     #two_one_run()
-    play_against_reflex()
+    #play_against_reflex()
+    minimax_vs_reflex_run()
     pass
 
 
