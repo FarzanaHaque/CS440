@@ -145,6 +145,7 @@ class Board:
     def check_possible(self, field, mid, oid):
         """
         Checks to see if a board state is possible (2 winners)
+        :param field: my gamefield
         :param mid: first id
         :param oid: second id
         :return: True if possible, False if impossible
@@ -563,6 +564,8 @@ class MiniMaxAgent:
         #make my move
         b.field[best_move[0]][best_move[1]] = self.mid
 
+        return
+
     def init_tree(self, b, mid, oid):
         # initialize the depth of 0
         level_0_field = copy.deepcopy(b.field)
@@ -645,9 +648,7 @@ class MiniMaxAgent:
     def return_best_move(self, level_0_node):
         #find any move that matches the best move
         best_value = level_0_node['value']
-
         best_children = [child for child in level_0_node['children'] if child['value'] == best_value]
-
         return best_children[0]
 
     def get_all_moves(self, field):
