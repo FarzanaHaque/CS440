@@ -1,6 +1,5 @@
 def alpha_beta(self,level_0_node):
-	#evaluate all states at depth 3 (state)
-	    lev_0_max=float('-inf')
+        lev_0_max=float('-inf')
         for level_1_node in level_0_node['children']:
 		    lev_1_min=float('inf')
             for level_2_node in level_1_node['children']:
