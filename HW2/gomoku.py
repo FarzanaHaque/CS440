@@ -395,13 +395,14 @@ class MiniMaxAgent:
         self.mid = ID
         self.oid = oID
 
+
     def make_move(self, b):
         #build my minimax tree
         root = self.init_tree(b, self.mid, self.oid)
 
         #fill all my nodes with values
         self.evaluate(root)
-        
+
         #get the optimal move in this case
         best_move = self.return_best_move(root)
 
@@ -424,42 +425,42 @@ class MiniMaxAgent:
         for m in moves:
             new_field = copy.deepcopy(level_0_node['initial_board'])
             new_field[m[0]][m[1]] = level_0_node['mid']
-            new_node = {'type': 'min',
+            level_1_node = {'type': 'min',
                         'mid': oid,
                         'children': [],
                         'value': 0,
                         'initial_board': new_field,
                         'move': m}
-            level_0_node['children'].append(new_node)
+            level_0_node['children'].append(level_1_node)
 
         # initialize the depth of 2
-        for child in level_0_node['children']:
-            moves = get_all_moves(child['initial_board'])
+        for level_1_node in level_0_node['children']:
+            moves = get_all_moves(level_1_node['initial_board'])
             for m in moves:
-                new_field = copy.deepcopy(child['initial_board'])
-                new_field[m[0]][m[1]] = child['mid']
-                new_node = {'type': 'max',
+                new_field = copy.deepcopy(level_1_node['initial_board'])
+                new_field[m[0]][m[1]] = level_1_node['mid']
+                level_2_node = {'type': 'max',
                             'mid': mid,
                             'children': [],
                             'value': 0,
                             'initial_board': new_field,
                             'move': m}
-                child['children'].append(new_node)
+                level_1_node['children'].append(level_2_node)
 
         # initialize the depth of 3
-        for c in level_0_node['children']:
-            for child in c['children']:
-                moves = get_all_moves(child['initial_board'])
+        for level_1_node in level_0_node['children']:
+            for level_2_node in level_1_node['children']:
+                moves = get_all_moves(level_1_node['initial_board'])
                 for m in moves:
-                    new_field = copy.deepcopy(child['initial_board'])
-                    new_field[m[0]][m[1]] = child['mid']
-                    new_node = {'type': 'state',
+                    new_field = copy.deepcopy(level_2_node['initial_board'])
+                    new_field[m[0]][m[1]] = level_2_node['mid']
+                    level_3_node = {'type': 'state',
                                 'mid': '@',
                                 'children': [],
                                 'value': 0,
                                 'initial_board': new_field,
                                 'move': m}
-                    child['children'].append(new_node)
+                    level_2_node['children'].append(level_3_node)
 
         return level_0_node
 
