@@ -1,6 +1,9 @@
-#(column, row)
-#(i, j)
 import copy
+
+"""
+Note all accesses are all in (y, x)
+
+"""
 
 class Board:
     field = []  # the game field
@@ -245,7 +248,7 @@ class ReflexAgent:
                     break
             if found_best:
                 best = (s[0] + 4, s[1] + 4)
-                if s[0] + 4 >= 0 and s[1] + 4 <= 6 and b.field[best[0]][best[1]] == ".":
+                if s[0] + 4 <= 6 and s[1] + 4 <= 6 and b.field[best[0]][best[1]] == ".":
                     # place at southeastern
                     return best
                 best = (s[0] - 1, s[1] - 1)
@@ -340,7 +343,7 @@ class ReflexAgent:
                     # at very right, left can be valid
                     return head1, head2
 
-            #check northwestern
+            # check northwestern
             found_best = True
             for count in range(1, 2 + 1):
                 cand = (s[0] - count, s[1] + count)
@@ -350,14 +353,18 @@ class ReflexAgent:
             if found_best:
                 head1 = (s[0] + 1, s[1] - 1)
                 head2 = (s[0] - 3, s[1] + 3)
-                if s[0] + 1 <= 6 and s[1] - 3 >= 0 and \
+                if s[0] + 1 <= 6 and s[0] - 3 >= 0 and \
                     s[1] - 1 >= 0 and s[1] + 3 <= 6 and \
                     b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
                     return head1, head2
-                elif (s[0] == 6 or s[1] == 0) and b.field[head2[0]][head2[1]] == ".":
+                elif (s[0] == 6 or s[1] == 0) and \
+                        s[0] - 3 >= 0 and s[1] + 3 <= 6 and \
+                        b.field[head2[0]][head2[1]] == ".":
                     # at bottom left corner, top right can be valid
                     return head2, head1
-                elif (s[0] - 2 == 0 or s[1] + 2 == 6) and b.field[head1[0]][head1[1]] == ".":
+                elif (s[0] - 2 == 0 or s[1] + 2 == 6) and \
+                        s[0] + 1 <= 6 and s[1] - 1 >= 0 and \
+                        b.field[head1[0]][head1[1]] == ".":
                     # at top right corner, bottom left can be valid
                     return head1, head2
 
@@ -371,14 +378,18 @@ class ReflexAgent:
             if found_best:
                 head1 = (s[0] - 1, s[1] - 1)
                 head2 = (s[0] + 3, s[1] + 3)
-                if s[0] - 1 >= 0 and s[1] + 3 <= 6 and \
+                if s[0] - 1 >= 0 and s[0] + 3 <= 6 and \
                         s[1] - 1 >= 0 and s[1] + 3 <= 6 and \
                         b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
                     return head1, head2
-                elif (s[0] == 0 or s[1] == 0) and b.field[head2[0]][head2[1]] == ".":
+                elif (s[0] == 0 or s[1] == 0) and \
+                        s[0] + 3 <= 6 and s[1] + 3 <=6 and \
+                        b.field[head2[0]][head2[1]] == ".":
                     # at top left, bottom right can be valid
                     return head2, head1
-                elif (s[0] + 2 == 0 or s[1] + 2 == 6) and b.field[head1[0]][head1[1]] == ".":
+                elif (s[0] + 2 == 0 or s[1] + 2 == 6) and \
+                        s[0] - 1 >= 0 and s[1] - 1 >= 0 and \
+                        b.field[head1[0]][head1[1]] == ".":
                     # at bottom right, top left can be valid
                     return head1, head2
 
@@ -554,16 +565,16 @@ class MiniMaxAgent:
         self.oid = oID
 
     def make_move(self, b):
-        #build my minimax tree
+        # build my minimax tree
         root = self.init_tree(b, self.mid, self.oid)
 
-        #fill all my nodes with values
+        # fill all my nodes with values
         self.evaluate(root)
 
-        #get the optimal move in this case
+        # get the optimal move in this case
         best_move = self.return_best_move(root)
 
-        #make my move
+        # make my move
         b.field[best_move[0]][best_move[1]] = self.mid
 
         return
@@ -629,26 +640,26 @@ class MiniMaxAgent:
         return 0
 
     def evaluate(self, level_0_node):
-        #evaluate all states at depth 3 (state)
+        # evaluate all states at depth 3 (state)
         for level_1_node in level_0_node['children']:
             for level_2_node in level_1_node['children']:
                 for level_3_node in level_2_node['children']:
                     level_3_node['value'] = self.eval_function[level_3_node['initial_board']]
 
-        #evaluate best states at depth 2 (max)
+        # evaluate best states at depth 2 (max)
         for level_1_node in level_0_node['children']:
             for level_2_node in level_1_node['children']:
                 level_2_node['value'] = max(level_2_node['children'])
 
-        #evaluate best states at depth 1 (min)
+        # evaluate best states at depth 1 (min)
         for level_1_node in level_0_node['children']:
             level_1_node['value'] = min(level_1_node['children'])
 
-        #evaluate best states at depth 0 (max)
+        # evaluate best states at depth 0 (max)
         level_0_node['value'] = max(level_0_node['children'])
 
     def return_best_move(self, level_0_node):
-        #find any move that matches the best move
+        # find any move that matches the best move
         best_value = level_0_node['value']
         best_children = [child for child in level_0_node['children'] if child['value'] == best_value]
         return best_children[0]
@@ -786,6 +797,7 @@ def play_against_reflex():
 
 
 def main():
+    #normal_run()
     two_one_run()
     #play_against_reflex()
 
