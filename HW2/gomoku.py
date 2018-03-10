@@ -73,6 +73,82 @@ class Board:
                 print(str(self.field_watcher[i][j]) + " ", end="")
             print("")
 
+    def check_winner(self, cid):
+        """
+        Check if cid has won on the current board
+        :return: bool if cid has won
+        """
+        win_segs = []
+        # look at right segs
+        for i in range(0, 7):
+            for j in range(0, 3):
+                # attempt to build win seg
+                win_seg = []
+                good_win = True
+                for count in range(0, 4 + 1):
+                    if self.field[i][j + count] == cid:
+                        win_seg.append((i, j + count))
+                    else:
+                        good_win = False
+                        break
+                if good_win:
+                    win_segs.append(win_seg)
+
+        # look at upward segs
+        for i in range(4, 7):
+            for j in range(0, 7):
+                # attempt to build win seg
+                win_seg = []
+                good_win = True
+                for count in range(0, 4 + 1):
+                    if self.field[i - count][j] == cid:
+                        win_seg.append((i - count, j))
+                    else:
+                        good_win = False
+                        break
+                if good_win:
+                    win_segs.append(win_seg)
+
+        # look at NorthWestern segs
+        for i in range(4, 6 + 1):
+            for j in range(0, 3):
+                # attempt to build win seg
+                win_seg = []
+                good_win = True
+                for count in range(0, 4 + 1):
+                    if self.field[i - count][j + count] == cid:
+                        win_seg.append((i - count, j + count))
+                    else:
+                        good_win = False
+                        break
+                if good_win:
+                    win_segs.append(win_seg)
+
+        # look at SouthWestern segs
+        for i in range(0, 3):
+            for j in range(0, 3):
+                # attempt to build win seg
+                win_seg = []
+                good_win = True
+                for count in range(0, 4 + 1):
+                    if self.field[i + count][j + count] == cid:
+                        win_seg.append((i + count, j + count))
+                    else:
+                        good_win = False
+                        break
+                if good_win:
+                    win_segs.append(win_seg)
+
+        return len(win_segs) > 0
+
+    def check_possible(self, mid, oid):
+        """
+        Checks to see if a board state is possible (2 winners)
+        :param mid: first id
+        :param oid: second id
+        :return: True if possible, False if impossible
+        """
+        return check_winner(mid) and check_winner(oid)
 
 class ReflexAgent:
     mid = ''  # My ID
@@ -473,7 +549,6 @@ class MiniMaxAgent:
         self.mid = ID
         self.oid = oID
 
-
     def make_move(self, b):
         #build my minimax tree
         root = self.init_tree(b, self.mid, self.oid)
@@ -486,7 +561,6 @@ class MiniMaxAgent:
 
         #make my move
         b.field[best_move[0]][best_move[1]] = self.mid
-
 
     def init_tree(self, b, mid, oid):
         # initialize the depth of 0
@@ -503,13 +577,14 @@ class MiniMaxAgent:
         for m in moves:
             new_field = copy.deepcopy(level_0_node['initial_board'])
             new_field[m[0]][m[1]] = level_0_node['mid']
-            level_1_node = {'type': 'min',
-                        'mid': oid,
-                        'children': [],
-                        'value': 0,
-                        'initial_board': new_field,
-                        'move': m}
-            level_0_node['children'].append(level_1_node)
+            if b.check_possible(mid, oid):
+                level_1_node = {'type': 'min',
+                            'mid': oid,
+                            'children': [],
+                            'value': 0,
+                            'initial_board': new_field,
+                            'move': m}
+                level_0_node['children'].append(level_1_node)
 
         # initialize the depth of 2
         for level_1_node in level_0_node['children']:
@@ -517,13 +592,14 @@ class MiniMaxAgent:
             for m in moves:
                 new_field = copy.deepcopy(level_1_node['initial_board'])
                 new_field[m[0]][m[1]] = level_1_node['mid']
-                level_2_node = {'type': 'max',
-                            'mid': mid,
-                            'children': [],
-                            'value': 0,
-                            'initial_board': new_field,
-                            'move': m}
-                level_1_node['children'].append(level_2_node)
+                if b.check_possible(mid, oid):
+                    level_2_node = {'type': 'max',
+                                'mid': mid,
+                                'children': [],
+                                'value': 0,
+                                'initial_board': new_field,
+                                'move': m}
+                    level_1_node['children'].append(level_2_node)
 
         # initialize the depth of 3
         for level_1_node in level_0_node['children']:
@@ -532,20 +608,19 @@ class MiniMaxAgent:
                 for m in moves:
                     new_field = copy.deepcopy(level_2_node['initial_board'])
                     new_field[m[0]][m[1]] = level_2_node['mid']
-                    level_3_node = {'type': 'state',
-                                'mid': '@',
-                                'children': [],
-                                'value': 0,
-                                'initial_board': new_field,
-                                'move': m}
-                    level_2_node['children'].append(level_3_node)
+                    if b.check_possible(mid, oid):
+                        level_3_node = {'type': 'state',
+                                    'mid': '@',
+                                    'children': [],
+                                    'value': 0,
+                                    'initial_board': new_field,
+                                    'move': m}
+                        level_2_node['children'].append(level_3_node)
 
         return level_0_node
 
-
     def eval_function(self, field):
         return 0
-
 
     def evaluate(self, level_0_node):
         #evaluate all states at depth 3 (state)
@@ -566,7 +641,6 @@ class MiniMaxAgent:
         #evaluate best states at depth 0 (max)
         level_0_node['value'] = max(level_0_node['children'])
 
-
     def return_best_move(self, level_0_node):
         #find any move that matches the best move
         best_value = level_0_node['value']
@@ -574,7 +648,6 @@ class MiniMaxAgent:
         best_children = [child for child in level_0_node['children'] if child['value'] == best_value]
 
         return best_children[0]
-
 
     def get_all_moves(self, field):
         """
