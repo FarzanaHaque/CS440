@@ -1,6 +1,6 @@
 #(column, row)
 #(i, j)
-
+import copy
 
 class Board:
     field = []  # the game field
@@ -150,7 +150,8 @@ class Board:
         :param oid: second id
         :return: True if possible, False if impossible
         """
-        return not (check_winner(field, mid) and check_winner(field, oid))
+        return not (self.check_winner(field, mid) and self.check_winner(field, oid))
+
 
 class ReflexAgent:
     mid = ''  # My ID
@@ -353,10 +354,10 @@ class ReflexAgent:
                     s[1] - 1 >= 0 and s[1] + 3 <= 6 and \
                     b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
                     return head1, head2
-                elif s[0] == 6 or s[1] == 0 and b.field[head2[0]][head2[1]] == ".":
+                elif (s[0] == 6 or s[1] == 0) and b.field[head2[0]][head2[1]] == ".":
                     # at bottom left corner, top right can be valid
                     return head2, head1
-                elif s[0] - 2 == 0 or s[1] + 2 == 6 and b.field[head1[0]][head1[1]] == ".":
+                elif (s[0] - 2 == 0 or s[1] + 2 == 6) and b.field[head1[0]][head1[1]] == ".":
                     # at top right corner, bottom left can be valid
                     return head1, head2
 
@@ -374,10 +375,10 @@ class ReflexAgent:
                         s[1] - 1 >= 0 and s[1] + 3 <= 6 and \
                         b.field[head1[0]][head1[1]] == "." and b.field[head2[0]][head2[1]] == ".":
                     return head1, head2
-                elif s[0] == 0 or s[1] == 0 and b.field[head2[0]][head2[1]] == ".":
+                elif (s[0] == 0 or s[1] == 0) and b.field[head2[0]][head2[1]] == ".":
                     # at top left, bottom right can be valid
                     return head2, head1
-                elif s[0] + 2 == 0 or s[1] + 2 == 6 and b.field[head1[0]][head1[1]] == ".":
+                elif (s[0] + 2 == 0 or s[1] + 2 == 6) and b.field[head1[0]][head1[1]] == ".":
                     # at bottom right, top left can be valid
                     return head1, head2
 
@@ -518,6 +519,7 @@ class ReflexAgent:
 
         if b.turn_number == 1:
             pass # can add a random later here for strategies
+
         # Part 1
         best_move = self.instant_win(b, self.mid, self.oid)
         if best_move != (-420, -420):
@@ -577,7 +579,7 @@ class MiniMaxAgent:
                         'move': (-420, -420)}
 
         # initialize the depth of 1
-        moves = get_all_moves(level_0_node['initial_board'])
+        moves = self.get_all_moves(level_0_node['initial_board'])
         for m in moves:
             new_field = copy.deepcopy(level_0_node['initial_board'])
             new_field[m[0]][m[1]] = level_0_node['mid']
@@ -592,7 +594,7 @@ class MiniMaxAgent:
 
         # initialize the depth of 2
         for level_1_node in level_0_node['children']:
-            moves = get_all_moves(level_1_node['initial_board'])
+            moves = self.get_all_moves(level_1_node['initial_board'])
             for m in moves:
                 new_field = copy.deepcopy(level_1_node['initial_board'])
                 new_field[m[0]][m[1]] = level_1_node['mid']
@@ -608,7 +610,7 @@ class MiniMaxAgent:
         # initialize the depth of 3
         for level_1_node in level_0_node['children']:
             for level_2_node in level_1_node['children']:
-                moves = get_all_moves(level_1_node['initial_board'])
+                moves = self.get_all_moves(level_1_node['initial_board'])
                 for m in moves:
                     new_field = copy.deepcopy(level_2_node['initial_board'])
                     new_field[m[0]][m[1]] = level_2_node['mid']
@@ -631,7 +633,7 @@ class MiniMaxAgent:
         for level_1_node in level_0_node['children']:
             for level_2_node in level_1_node['children']:
                 for level_3_node in level_2_node['children']:
-                    level_3_node['value'] = eval_function[level_3_node['initial_board']]
+                    level_3_node['value'] = self.eval_function[level_3_node['initial_board']]
 
         #evaluate best states at depth 2 (max)
         for level_1_node in level_0_node['children']:
@@ -666,13 +668,18 @@ class MiniMaxAgent:
 
 
 def normal_run():
+    # Initialize board
     b = Board()
     print("Initial State")
     print("------------------------------")
     b.print_board()
     print("")
+
+    # Load Agents
     player1 = ReflexAgent('R', 'B')
     player2 = ReflexAgent('B', 'R')
+
+    #Play
     while b.winner == '.':
         print("Turn " + str(b.turn_number))
         print("------------------------------")
@@ -681,6 +688,8 @@ def normal_run():
         b.print_board()
         b.turn_number += 1
         print("")
+
+    #Print Winner
     print("Finished! Winner is " + b.winner)
     print("------------------------------")
     b.print_board()
@@ -723,8 +732,62 @@ def two_one_run():
     b.print_watcher()
 
 
+def play_against_reflex():
+    """
+    This allows play against the reflex agent in a Terminal based GUI.
+    Enforce that the player plays second
+    :return: nothing
+    """
+    import os
+    from time import sleep
+
+    # Initialize board
+    b = Board()
+
+    # Load Agents
+    player1 = ReflexAgent('R', 'B')
+
+    # Play
+    while b.winner == '.':
+        # Let Reflex Agent Move
+        os.system('clear')
+        print("Board")
+        print("------------------------------")
+        player1.make_move(b)
+        b.print_board()
+        if b.winner != '.':
+            break
+
+        # Let User Input
+        user_x = input('Enter enter row to place stone: ')
+        user_y = input('Enter enter column to place stone: ')
+        user_x = int(user_x)
+        user_y = int(user_y)
+
+        # Check User Input
+        b.field[user_y][user_x] = 'B'
+        b.check_winner(b.field, 'B')
+        if b.check_winner(b.field, 'B'):
+            b.winner = 'B'
+            break
+
+        # Show board with User Input
+        os.system('clear')
+        print("Board")
+        print("------------------------------")
+        b.print_board()
+        sleep(1)
+
+    # Print Winner
+    os.system('clear')
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
+
+
 def main():
     two_one_run()
+    #play_against_reflex()
 
 
 if __name__ == "__main__":
