@@ -653,13 +653,13 @@ class MiniMaxAgent:
     def get_all_moves(self, field):
         """
         Gets all the nodes that are available
-        :param cid: the current id
+        :param field: the game field
         :return: a list of tuples that match
         """
         output = []
         for i in range(0, 7):
             for j in range(0, 7):
-                if self.field[i][j] == '.':
+                if field[i][j] == '.':
                     output.append((i, j))
         return output
 
