@@ -73,9 +73,10 @@ class Board:
                 print(str(self.field_watcher[i][j]) + " ", end="")
             print("")
 
-    def check_winner(self, cid):
+    def check_winner(self, field, cid):
         """
         Check if cid has won on the current board
+        This is a modified get win segs. Check if there's a sequence of 5 and return True if there are any
         :return: bool if cid has won
         """
         win_segs = []
@@ -86,7 +87,7 @@ class Board:
                 win_seg = []
                 good_win = True
                 for count in range(0, 4 + 1):
-                    if self.field[i][j + count] == cid:
+                    if field[i][j + count] == cid:
                         win_seg.append((i, j + count))
                     else:
                         good_win = False
@@ -101,7 +102,7 @@ class Board:
                 win_seg = []
                 good_win = True
                 for count in range(0, 4 + 1):
-                    if self.field[i - count][j] == cid:
+                    if field[i - count][j] == cid:
                         win_seg.append((i - count, j))
                     else:
                         good_win = False
@@ -116,7 +117,7 @@ class Board:
                 win_seg = []
                 good_win = True
                 for count in range(0, 4 + 1):
-                    if self.field[i - count][j + count] == cid:
+                    if field[i - count][j + count] == cid:
                         win_seg.append((i - count, j + count))
                     else:
                         good_win = False
@@ -131,7 +132,7 @@ class Board:
                 win_seg = []
                 good_win = True
                 for count in range(0, 4 + 1):
-                    if self.field[i + count][j + count] == cid:
+                    if field[i + count][j + count] == cid:
                         win_seg.append((i + count, j + count))
                     else:
                         good_win = False
@@ -141,14 +142,14 @@ class Board:
 
         return len(win_segs) > 0
 
-    def check_possible(self, mid, oid):
+    def check_possible(self, field, mid, oid):
         """
         Checks to see if a board state is possible (2 winners)
         :param mid: first id
         :param oid: second id
         :return: True if possible, False if impossible
         """
-        return check_winner(mid) and check_winner(oid)
+        return not (check_winner(field, mid) and check_winner(field, oid))
 
 class ReflexAgent:
     mid = ''  # My ID
@@ -577,7 +578,7 @@ class MiniMaxAgent:
         for m in moves:
             new_field = copy.deepcopy(level_0_node['initial_board'])
             new_field[m[0]][m[1]] = level_0_node['mid']
-            if b.check_possible(mid, oid):
+            if b.check_possible(new_field, mid, oid):
                 level_1_node = {'type': 'min',
                             'mid': oid,
                             'children': [],
@@ -592,7 +593,7 @@ class MiniMaxAgent:
             for m in moves:
                 new_field = copy.deepcopy(level_1_node['initial_board'])
                 new_field[m[0]][m[1]] = level_1_node['mid']
-                if b.check_possible(mid, oid):
+                if b.check_possible(new_field, mid, oid):
                     level_2_node = {'type': 'max',
                                 'mid': mid,
                                 'children': [],
@@ -608,7 +609,7 @@ class MiniMaxAgent:
                 for m in moves:
                     new_field = copy.deepcopy(level_2_node['initial_board'])
                     new_field[m[0]][m[1]] = level_2_node['mid']
-                    if b.check_possible(mid, oid):
+                    if b.check_possible(new_field, mid, oid):
                         level_3_node = {'type': 'state',
                                     'mid': '@',
                                     'children': [],
