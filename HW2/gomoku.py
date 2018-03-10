@@ -5,6 +5,7 @@ Note all accesses are all in (y, x)
 
 """
 
+
 class Board:
     field = []  # the game field
     field_watcher = []
@@ -752,54 +753,114 @@ def play_against_reflex():
     import os
     from time import sleep
 
-    # Initialize board
-    b = Board()
+    # Introduction:
+    os.system('clear')
+    print("Welcome to Gomoku!")
 
-    # Load Agents
-    player1 = ReflexAgent('R', 'B')
+    # play first or second
+    user_play = 'yes'
+    bad_in = True
+    while bad_in:
+        try:
+            user_play = input('Would you like to go first? (\'yes\' or \'no\'): ')
+            assert user_play == 'yes' or user_play == 'no'
+            bad_in = False
+        except AssertionError:
+            print('Please only type \'yes\' or \'no\'')
+
+    os.system('clear')
+
+    # load stuff
+    b = Board()
+    com_player = None
+    user_id = '!'
+    if user_play == 'no':
+        com_player = ReflexAgent('R', 'B')
+        print('You are playing second! You are Blue (B).')
+        user_id = 'B'
+    else:
+        com_player = ReflexAgent('B', 'R')
+        print('You are playing first! You are Red (R).')
+        user_id = 'R'
+    print("------------------------------")
+    b.print_board()
+    sleep(3)
 
     # Play
     while b.winner == '.':
-        # Let Reflex Agent Move
-        os.system('clear')
-        print("Board")
-        print("------------------------------")
-        player1.make_move(b)
-        b.print_board()
-        if b.winner != '.':
-            break
+        if user_play == 'no':
+            # Let Reflex Agent Move
+            os.system('clear')
+            print("Gomoku")
+            print("------------------------------")
+            com_player.make_move(b)
+            b.print_board()
+            print("")
+            if b.winner != '.':
+                break
 
-        # Let User Input
-        user_x = input('Enter enter row to place stone: ')
-        user_y = input('Enter enter column to place stone: ')
-        user_x = int(user_x)
-        user_y = int(user_y)
+        # Let user input
+        bad_in = True
+        user_x = -420
+        user_y = -420
+        while bad_in:
+            try:
+                user_x = input('Enter enter row to place stone: ')
+                user_y = input('Enter enter column to place stone: ')
+                user_x = int(user_x)
+                user_y = int(user_y)
+                assert 0 <= user_x <= 6
+                assert 0 <= user_y <= 6
+                assert b.field[user_y][user_x] == '.'
+                bad_in = False
+            except ValueError:
+                print("\nPlease input a number\n")
+                user_x = -420
+                user_y = -420
+            except AssertionError:
+                print("\nPlease input a valid number [0,6] on a slot that doesn't have a stone on it\n")
+                user_x = -420
+                user_y = -420
 
-        # Check User Input
-        b.field[user_y][user_x] = 'B'
-        b.check_winner(b.field, 'B')
-        if b.check_winner(b.field, 'B'):
-            b.winner = 'B'
+        # Run User Input
+        b.field[user_y][user_x] = user_id
+        b.check_winner(b.field, user_id)
+        if b.check_winner(b.field, user_id):
+            b.winner = user_id
             break
 
         # Show board with User Input
         os.system('clear')
-        print("Board")
+        print("Gomoku")
         print("------------------------------")
         b.print_board()
         sleep(1)
 
+        if user_play == 'yes':
+            # Let Reflex Agent Move
+            os.system('clear')
+            print("Gomoku")
+            print("------------------------------")
+            com_player.make_move(b)
+            b.print_board()
+            if b.winner != '.':
+                break
+
     # Print Winner
     os.system('clear')
-    print("Finished! Winner is " + b.winner)
+    if b.winner == user_id:
+        print("Finished! You Win!")
+    else:
+        print("Finished! Sorry, you lose!")
     print("------------------------------")
     b.print_board()
 
 
 def main():
     #normal_run()
-    two_one_run()
-    #play_against_reflex()
+    #two_one_run()
+    play_against_reflex()
+    pass
 
 
 if __name__ == "__main__":
