@@ -563,17 +563,25 @@ class ReflexAgent:
 class MiniMaxAgent:
     mid = ''  # My ID
     oid = ''  # Opponents ID
+    is_alpha_beta = False
+    name = ''
+    nodes_expanded_list = []
 
-    def __init__(self, ID, oID):
+    def __init__(self, ID, oID, is_alpha_beta_in, NAME):
         self.mid = ID
         self.oid = oID
+        self.is_alpha_beta = is_alpha_beta_in
+        self.name = NAME
 
     def make_move(self, b):
         # build my minimax tree
         root = self.init_tree(b, self.mid, self.oid)
 
         # fill all my nodes with values
-        self.evaluate(root)
+        if self.is_alpha_beta:
+            self.alpha_beta(root)
+        else:
+            self.evaluate(root)
 
         # get the optimal move in this case
         best_move = self.return_best_move(root)
@@ -644,11 +652,13 @@ class MiniMaxAgent:
         return random.randint(-100, 100)
 
     def evaluate(self, level_0_node):
+        nodes_expanded = 0
         # evaluate all states at depth 3 (state)
         for level_1_node in level_0_node['children']:
             for level_2_node in level_1_node['children']:
                 for level_3_node in level_2_node['children']:
                     level_3_node['value'] = self.eval_function(level_3_node['initial_board'])
+                    nodes_expanded += 1
 
         # evaluate best states at depth 2 (max)
         for level_1_node in level_0_node['children']:
@@ -671,6 +681,41 @@ class MiniMaxAgent:
             values.append(level_1_node['value'])
         level_0_node['value'] = max(values)
 
+        self.nodes_expanded_list.append(nodes_expanded)
+
+    def alpha_beta(self, level_0_node):
+        nodes_expanded = 0
+
+        lev_0_max = float('-inf')
+        for level_1_node in level_0_node['children']:
+            lev_1_min = float('inf')
+            for level_2_node in level_1_node['children']:
+                lev_3_max = float('-inf')
+                valid = 1
+                for level_3_node in level_2_node['children']:
+                    nodes_expanded += 1
+                    ret = self.eval_function(level_3_node['initial_board'])
+                    if ret > lev_1_min:
+                        valid = 0
+                        break
+                    if ret > lev_3_max:
+                        lev_3_max = ret
+
+                if valid:
+                    level_2_node['value'] = lev_3_max
+                else:
+                    level_2_node['value'] = float('inf')
+                if level_2_node['value'] < lev_1_min:
+                    lev_1_min = level_2_node['value']
+
+            level_1_node['value'] = lev_1_min
+            if level_1_node['value'] > lev_0_max:
+                lev_0_max = level_1_node['value']
+
+        level_0_node['value'] = lev_0_max
+
+        self.nodes_expanded_list.append(nodes_expanded)
+
     def return_best_move(self, level_0_node):
         # find any move that matches the best move
         best_value = level_0_node['value']
@@ -690,6 +735,12 @@ class MiniMaxAgent:
                     output.append((i, j))
         return output
 
+    def print_nodes_expanded(self):
+        print(self.name + " expansion list")
+        print("-------------------------")
+        for count in range(0, len(self.nodes_expanded_list)):
+            print("Turn " + str(count + 1) + ": " +
+                  str(self.nodes_expanded_list[count]))
 
 def normal_run():
     # Initialize board
@@ -721,10 +772,10 @@ def normal_run():
 
 def two_one_run():
     b = Board()
-    b.field[1][1] = 'R'
-    b.field[5][5] = 'B'
-    b.field_watcher[1][1] = 'a'
-    b.field_watcher[5][5] = 'A'
+    b.field[5][1] = 'R'
+    b.field[1][5] = 'B'
+    b.field_watcher[5][1] = 'a'
+    b.field_watcher[1][5] = 'A'
     b.red_ticker = 'b'
     b.blue_ticker = 'B'
     b.turn_number = 2
@@ -754,34 +805,6 @@ def two_one_run():
     print("")
     print("Watcher-----------------------")
     b.print_watcher()
-
-
-def minimax_vs_reflex_run():
-    # Initialize board
-    b = Board()
-    print("Initial State")
-    print("------------------------------")
-    b.print_board()
-    print("")
-
-    # Load Agents
-    player1 = MiniMaxAgent('R', 'B')
-    player2 = ReflexAgent('B', 'R')
-
-    # Play
-    while b.winner == '.':
-        print("Turn " + str(b.turn_number))
-        print("------------------------------")
-        player1.make_move(b)
-        player2.make_move(b)
-        b.print_board()
-        b.turn_number += 1
-        print("")
-
-    # Print Winner
-    print("Finished! Winner is " + b.winner)
-    print("------------------------------")
-    b.print_board()
 
 
 def play_against_reflex():
@@ -894,6 +917,36 @@ def play_against_reflex():
         print("Finished! Sorry, you lose!")
     print("------------------------------")
     b.print_board()
+
+
+def minimax_vs_reflex_run():
+    # Initialize board
+    b = Board()
+    print("Initial State")
+    print("------------------------------")
+    b.print_board()
+    print("")
+
+    # Load Agents
+    player1 = MiniMaxAgent('R', 'B', False, 'MinMax')
+    player2 = ReflexAgent('B', 'R')
+
+    # Play
+    while b.winner == '.':
+        print("Turn " + str(b.turn_number))
+        print("------------------------------")
+        player1.make_move(b)
+        player2.make_move(b)
+        b.print_board()
+        b.turn_number += 1
+        print("")
+
+    # Print Winner
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
+
+    player1.print_nodes_expanded()
 
 
 def main():
