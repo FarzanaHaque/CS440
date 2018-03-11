@@ -723,47 +723,65 @@ class MiniMaxAgent:
         return full
 
     def eval_function(self, field):
-        w4 = 100000
-        w3 = 5000
+        w4 = 1000000
+        w3 = 50000
         w2 = 2500
         w1 = 10 #10
         w0 = 1 #5
+
+        me_w0 = 0
+        me_w1 = 0
+        me_w2 = -50
+        me_w3 = 0
+        me_w4 = 0
+
+        en_w0 = 0
+        en_w1 = 200
+        en_w2 = 5000
+        en_w3 = 25000
+        en_w4 = 50000
+
         # this is calculating my chains
         win_segs = self.find_all_win_segs(field, self.oid)
-        chainme = [0, 0, 0, 0, 0, 0]  # segs length 0,1, 2,3,4,5
-        weightme = 0;
+        chainme = [0, 0, 0, 0, 0, 0]  # segs length 0,1,2,3,4,5
         # has winning segments score all the segments (1 stone is 1 point)
-        win_seg_count = {}
         for ws in win_segs:
             score = 0
             for t in ws:
                 if field[t[0]][t[1]] == self.mid:
                     score += 1
             chainme[score] += 1  # increment the chain by that #
-        weightme = chainme[0] * w0 + chainme[1] * w1 + chainme[2] * (w2-50) + chainme[3] * (w3-500) + chainme[4] * (w4-1000)
+        weightme = chainme[0] * (w0+me_w0) + \
+                   chainme[1] * (w1+me_w1) + \
+                   chainme[2] * (w2+me_w2) + \
+                   chainme[3] * (w3+me_w3) + \
+                   chainme[4] * (w4+me_w4)
+
         win_segsen = self.find_all_win_segs(field, self.mid)
         chainen = [0, 0, 0, 0, 0, 0]  # segs length 0,1, 2,3,4,5
-        #weighten = 0;
-
         # has winning segments score all the segments (1 stone is 1 point)
-        win_seg_count = {}
         for ws in win_segsen:
             score = 0
             for t in ws:
                 if field[t[0]][t[1]] == self.oid:
                     score += 1
             chainen[score] += 1  # increment the chain by that #
-        weighten = (chainen[1]*(w1+200))+(chainen[2]*(w2+5000))+(chainen[3] * (w3+25000)) + (chainen[4] * (w4+50000))
-        if (chainen[5] != 0):  # b won
+        weighten = (chainen[1] * (w1+en_w1)) + \
+                   (chainen[2] * (w2+en_w2)) + \
+                   (chainen[3] * (w3+en_w3)) + \
+                   (chainen[4] * (w4+en_w4))
+
+        if chainen[5] != 0:  # b won
             return float('-inf')
-        if (chainme[5] != 0):  # r won
+        if chainme[5] != 0:  # r won
             return float('inf')
-        if(chainen[4]>=1): #b probs won
-            return(-999999999999999)
-        if (self.check_full(field)):
+        if chainen[4] >= 1: #b probs won
+            return -999999999999999
+        if self.check_full(field):
             return 0
-        if(chainme[4]>=2): #r probably won but not guaranteed (if the 4 chains share the same open node)
-            return(99999999999999)
+        if chainme[4] >= 2: #r probably won but not guaranteed (if the 4 chains share the same open node)
+            return 99999999999999
+
         return weightme - weighten
 
     def evaluate(self, level_0_node):
@@ -1304,11 +1322,11 @@ def main():
     #play_against_reflex()
 
     #alphabeta_vs_minimax()
-    minimax_vs_alphabeta()
+    #minimax_vs_alphabeta()
     #alphabeta_vs_reflex()
     #reflex_vs_alphabeta()
     #reflex_vs_minimax()
-    #minimax_vs_reflex_run()
+    minimax_vs_reflex_run()
 
     pass
 
