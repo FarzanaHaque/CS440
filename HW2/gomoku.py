@@ -15,7 +15,7 @@ class Board:
     turn_number = 1
     winner = '.'
     red_ticker = 'a'
-    blue_ticker = 'b'
+    blue_ticker = 'A'
 
     def __init__(self):
         for i in range(0, 7):
