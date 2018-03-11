@@ -572,6 +572,7 @@ class MiniMaxAgent:
         self.oid = oID
         self.is_alpha_beta = is_alpha_beta_in
         self.name = NAME
+        nodes_expanded_list = []
 
     def make_move(self, b):
         # build my minimax tree
@@ -942,14 +943,18 @@ def alphabeta_vs_minimax():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.update_field()
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+
         player2.make_move(b)
+        b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
             break
+
         b.print_board()
         b.turn_number += 1
         print("")
@@ -958,6 +963,10 @@ def alphabeta_vs_minimax():
     print("Finished! Winner is " + b.winner)
     print("------------------------------")
     b.print_board()
+
+    print("")
+    print("Watcher-----------------------")
+    b.print_watcher()
 
     player1.print_nodes_expanded()
     player2.print_nodes_expanded()
@@ -979,14 +988,18 @@ def minimax_vs_alphabeta():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.update_field()
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+
         player2.make_move(b)
+        b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
             break
+
         b.print_board()
         b.turn_number += 1
         print("")
@@ -995,6 +1008,10 @@ def minimax_vs_alphabeta():
     print("Finished! Winner is " + b.winner)
     print("------------------------------")
     b.print_board()
+
+    print("")
+    print("Watcher-----------------------")
+    b.print_watcher()
 
     player1.print_nodes_expanded()
     player2.print_nodes_expanded()
@@ -1016,14 +1033,18 @@ def alphabeta_vs_reflex():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.update_field()
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+
         player2.make_move(b)
+        b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
             break
+
         b.print_board()
         b.turn_number += 1
         print("")
@@ -1032,6 +1053,10 @@ def alphabeta_vs_reflex():
     print("Finished! Winner is " + b.winner)
     print("------------------------------")
     b.print_board()
+
+    print("")
+    print("Watcher-----------------------")
+    b.print_watcher()
 
 def reflex_vs_alphabeta():
     # Initialize board
@@ -1050,14 +1075,18 @@ def reflex_vs_alphabeta():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.update_field()
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+
         player2.make_move(b)
+        b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
             break
+
         b.print_board()
         b.turn_number += 1
         print("")
@@ -1066,6 +1095,10 @@ def reflex_vs_alphabeta():
     print("Finished! Winner is " + b.winner)
     print("------------------------------")
     b.print_board()
+
+    print("")
+    print("Watcher-----------------------")
+    b.print_watcher()
 
 def reflex_vs_minimax():
     # Initialize board
@@ -1084,14 +1117,18 @@ def reflex_vs_minimax():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.update_field()
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+
         player2.make_move(b)
+        b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
             break
+
         b.print_board()
         b.turn_number += 1
         print("")
@@ -1100,6 +1137,10 @@ def reflex_vs_minimax():
     print("Finished! Winner is " + b.winner)
     print("------------------------------")
     b.print_board()
+
+    print("")
+    print("Watcher-----------------------")
+    b.print_watcher()
 
 def minimax_vs_reflex_run():
     # Initialize board
@@ -1118,14 +1159,18 @@ def minimax_vs_reflex_run():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.update_field()
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+
         player2.make_move(b)
+        b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
             break
+
         b.print_board()
         b.turn_number += 1
         print("")
@@ -1135,7 +1180,9 @@ def minimax_vs_reflex_run():
     print("------------------------------")
     b.print_board()
 
-    player1.print_nodes_expanded()
+    print("")
+    print("Watcher-----------------------")
+    b.print_watcher()
 
 # 2.4
 def play_against_reflex():
