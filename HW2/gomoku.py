@@ -648,8 +648,121 @@ class MiniMaxAgent:
 
         return level_0_node
 
+    def find_all_win_segs(self, field, oid):
+        win_segs = []
+        # look at right segs
+        for i in range(0, 7):
+            for j in range(0, 3):
+                # attempt to build win seg
+                win_seg = []
+                good_win = True
+                for count in range(0, 4 + 1):
+                    if field[i][j + count] != oid:
+                        win_seg.append((i, j + count))
+                    else:
+                        good_win = False
+                        break
+                if good_win:
+                    win_segs.append(win_seg)
+
+        # look at upward segs
+        for i in range(4, 7):
+            for j in range(0, 7):
+                # attempt to build win seg
+                win_seg = []
+                good_win = True
+                for count in range(0, 4 + 1):
+                    if field[i - count][j] != oid:
+                        win_seg.append((i - count, j))
+                    else:
+                        good_win = False
+                        break
+                if good_win:
+                    win_segs.append(win_seg)
+
+        # look at NorthWestern segs
+        for i in range(4, 6 + 1):
+            for j in range(0, 3):
+                # attempt to build win seg
+                win_seg = []
+                good_win = True
+                for count in range(0, 4 + 1):
+                    if field[i - count][j + count] != oid:
+                        win_seg.append((i - count, j + count))
+                    else:
+                        good_win = False
+                        break
+                if good_win:
+                    win_segs.append(win_seg)
+
+        # look at SouthWestern segs
+        for i in range(0, 3):
+            for j in range(0, 3):
+                # attempt to build win seg
+                win_seg = []
+                good_win = True
+                for count in range(0, 4 + 1):
+                    if field[i + count][j + count] != oid:
+                        win_seg.append((i + count, j + count))
+                    else:
+                        good_win = False
+                        break
+                if good_win:
+                    win_segs.append(win_seg)
+
+        return win_segs
+
+    def check_full(self, field):
+        full = True
+        for i in range(0, 7):
+            for j in range(0, 7):
+                if field[i][j] == '.':
+                    full = False
+                    break
+        return full
+
     def eval_function(self, field):
-        return random.randint(-100, 100)
+        w4 = 1000
+        w3 = 500
+        w2 = 100
+        w1 = 30
+        w0 = 10
+        # this is calculating my chains
+        win_segs = self.find_all_win_segs(field, self.oid)
+        chainr = [0, 0, 0, 0, 0, 0]  # segs length 0,1, 2,3,4,5
+        weightr = 0;
+        # has winning segments score all the segments (1 stone is 1 point)
+        win_seg_count = {}
+        for ws in win_segs:
+            score = 0
+            for t in ws:
+                if field[t[0]][t[1]] == self.mid:
+                    score += 1
+            chainr[score] += 1  # increment the chain by that #
+        weightr = chainr[0] * w0 + chainr[1] * w1 + chainr[2] * w2 + chainr[3] * w3 + chainr[4] * w4
+        win_segsb = self.find_all_win_segs(field, self.mid)
+        chainb = [0, 0, 0, 0, 0, 0]  # segs length 0,1, 2,3,4,5
+        weightb = 0;
+
+        # has winning segments score all the segments (1 stone is 1 point)
+        win_seg_count = {}
+        for ws in win_segsb:
+            score = 0
+            for t in ws:
+                if field[t[0]][t[1]] == self.oid:  # used to be b.field
+                    score += 1
+
+            # win_seg_count[tuple(ws)] = score
+            chainb[score] += 1  # increment the chain by that #
+        weightb = chainb[0] * w0 + chainb[1] * w1 + chainb[2] * w2 + chainb[3] * w3 + chainb[4] * w4
+        if (chainr[5] != 0 or chainr[
+            4] >= 2):  # r won ***** doesn't take into account situation where it's the same open spot for both 4 chains for opponnet to prevent
+            return float('inf')
+        if (chainb[5] != 0 or chainb[4] >= 2):  # b won
+            return float('-inf')
+        if (self.check_full(field)):
+            return 0
+        return weightr - weightb
 
     def evaluate(self, level_0_node):
         nodes_expanded = 0
