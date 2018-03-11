@@ -941,7 +941,13 @@ def alphabeta_vs_minimax():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.check_winner(b.field, 'R')
+        if b.winner != '.':
+            break
         player2.make_move(b)
+        b.check_winner(b.field, 'B')
+        if b.winner != '.':
+            break
         b.print_board()
         b.turn_number += 1
         print("")
@@ -971,7 +977,13 @@ def minimax_vs_alphabeta():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.check_winner(b.field, 'R')
+        if b.winner != '.':
+            break
         player2.make_move(b)
+        b.check_winner(b.field, 'B')
+        if b.winner != '.':
+            break
         b.print_board()
         b.turn_number += 1
         print("")
@@ -1001,7 +1013,13 @@ def alphabeta_vs_reflex():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.check_winner(b.field, 'R')
+        if b.winner != '.':
+            break
         player2.make_move(b)
+        b.check_winner(b.field, 'B')
+        if b.winner != '.':
+            break
         b.print_board()
         b.turn_number += 1
         print("")
@@ -1028,7 +1046,13 @@ def reflex_vs_alphabeta():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.check_winner(b.field, 'R')
+        if b.winner != '.':
+            break
         player2.make_move(b)
+        b.check_winner(b.field, 'B')
+        if b.winner != '.':
+            break
         b.print_board()
         b.turn_number += 1
         print("")
@@ -1055,7 +1079,13 @@ def reflex_vs_minimax():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.check_winner(b.field, 'R')
+        if b.winner != '.':
+            break
         player2.make_move(b)
+        b.check_winner(b.field, 'B')
+        if b.winner != '.':
+            break
         b.print_board()
         b.turn_number += 1
         print("")
@@ -1082,7 +1112,13 @@ def minimax_vs_reflex_run():
         print("Turn " + str(b.turn_number))
         print("------------------------------")
         player1.make_move(b)
+        b.check_winner(b.field, 'R')
+        if b.winner != '.':
+            break
         player2.make_move(b)
+        b.check_winner(b.field, 'B')
+        if b.winner != '.':
+            break
         b.print_board()
         b.turn_number += 1
         print("")
