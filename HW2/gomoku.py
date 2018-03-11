@@ -750,10 +750,10 @@ class MiniMaxAgent:
         for ws in win_segsen:
             score = 0
             for t in ws:
-                if field[t[0]][t[1]] == self.oid:  # used to be b.field
+                if field[t[0]][t[1]] == self.oid:
                     score += 1
             chainen[score] += 1  # increment the chain by that #
-        weighten = chainen[1]*(w1+200)+chainen[2]*(w2+5000)+chainen[3] * (w3+25000) + chainen[4] * (w4+50000)
+        weighten = (chainen[1]*(w1+200))+(chainen[2]*(w2+5000))+(chainen[3] * (w3+25000)) + (chainen[4] * (w4+50000))
         if (chainen[5] != 0):  # b won
             return float('-inf')
         if (chainme[5] != 0):  # r won
@@ -763,9 +763,9 @@ class MiniMaxAgent:
         if (self.check_full(field)):
             return 0
         if(chainme[4]>=2): #r probably won but not guaranteed (if the 4 chains share the same open node)
-            return(999999999999999)
+            return(99999999999999)
         return weightme - weighten
-    
+
     def evaluate(self, level_0_node):
         nodes_expanded = 0
         # evaluate all states at depth 3 (state)
