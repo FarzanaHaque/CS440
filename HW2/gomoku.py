@@ -855,6 +855,8 @@ class MiniMaxAgent:
             print("Turn " + str(count + 1) + ": " +
                   str(self.nodes_expanded_list[count]))
 
+
+# Tester for Reflex
 def normal_run():
     # Initialize board
     b = Board()
@@ -883,6 +885,7 @@ def normal_run():
     b.print_board()
 
 
+# Tester for 2.1
 def two_one_run():
     b = Board()
     b.field[5][1] = 'R'
@@ -919,7 +922,179 @@ def two_one_run():
     print("Watcher-----------------------")
     b.print_watcher()
 
+# Part 2.2 Runs
 
+def alphabeta_vs_minimax():
+    # Initialize board
+    b = Board()
+    print("Initial State")
+    print("------------------------------")
+    b.print_board()
+    print("")
+
+    # Load Agents
+    player1 = MiniMaxAgent('R', 'B', True, 'AlphaBeta')
+    player2 = MiniMaxAgent('B', 'R', False, 'MiniMax')
+
+    # Play
+    while b.winner == '.':
+        print("Turn " + str(b.turn_number))
+        print("------------------------------")
+        player1.make_move(b)
+        player2.make_move(b)
+        b.print_board()
+        b.turn_number += 1
+        print("")
+
+    # Print Winner
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
+
+    player1.print_nodes_expanded()
+    player2.print_nodes_expanded()
+
+def minimax_vs_alphabeta():
+    # Initialize board
+    b = Board()
+    print("Initial State")
+    print("------------------------------")
+    b.print_board()
+    print("")
+
+    # Load Agents
+    player1 = MiniMaxAgent('R', 'B', False, 'MiniMax')
+    player2 = MiniMaxAgent('B', 'R', True, 'AlphaBeta')
+
+    # Play
+    while b.winner == '.':
+        print("Turn " + str(b.turn_number))
+        print("------------------------------")
+        player1.make_move(b)
+        player2.make_move(b)
+        b.print_board()
+        b.turn_number += 1
+        print("")
+
+    # Print Winner
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
+
+    player1.print_nodes_expanded()
+    player2.print_nodes_expanded()
+
+def alphabeta_vs_reflex():
+    # Initialize board
+    b = Board()
+    print("Initial State")
+    print("------------------------------")
+    b.print_board()
+    print("")
+
+    # Load Agents
+    player1 = MiniMaxAgent('R', 'B', True, 'AlphaBeta')
+    player2 = ReflexAgent('B', 'R')
+
+    # Play
+    while b.winner == '.':
+        print("Turn " + str(b.turn_number))
+        print("------------------------------")
+        player1.make_move(b)
+        player2.make_move(b)
+        b.print_board()
+        b.turn_number += 1
+        print("")
+
+    # Print Winner
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
+
+def reflex_vs_alphabeta():
+    # Initialize board
+    b = Board()
+    print("Initial State")
+    print("------------------------------")
+    b.print_board()
+    print("")
+
+    # Load Agents
+    player1 = ReflexAgent('R', 'B')
+    player2 = MiniMaxAgent('B', 'R', True, 'AlphaBeta')
+
+    # Play
+    while b.winner == '.':
+        print("Turn " + str(b.turn_number))
+        print("------------------------------")
+        player1.make_move(b)
+        player2.make_move(b)
+        b.print_board()
+        b.turn_number += 1
+        print("")
+
+    # Print Winner
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
+
+def reflex_vs_minimax():
+    # Initialize board
+    b = Board()
+    print("Initial State")
+    print("------------------------------")
+    b.print_board()
+    print("")
+
+    # Load Agents
+    player1 = ReflexAgent('R', 'B')
+    player2 = MiniMaxAgent('B', 'R', False, 'MiniMax')
+
+    # Play
+    while b.winner == '.':
+        print("Turn " + str(b.turn_number))
+        print("------------------------------")
+        player1.make_move(b)
+        player2.make_move(b)
+        b.print_board()
+        b.turn_number += 1
+        print("")
+
+    # Print Winner
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
+
+def minimax_vs_reflex_run():
+    # Initialize board
+    b = Board()
+    print("Initial State")
+    print("------------------------------")
+    b.print_board()
+    print("")
+
+    # Load Agents
+    player1 = MiniMaxAgent('R', 'B', False, 'MinMax')
+    player2 = ReflexAgent('B', 'R')
+
+    # Play
+    while b.winner == '.':
+        print("Turn " + str(b.turn_number))
+        print("------------------------------")
+        player1.make_move(b)
+        player2.make_move(b)
+        b.print_board()
+        b.turn_number += 1
+        print("")
+
+    # Print Winner
+    print("Finished! Winner is " + b.winner)
+    print("------------------------------")
+    b.print_board()
+
+    player1.print_nodes_expanded()
+
+# 2.4
 def play_against_reflex():
     """
     This allows play against the reflex agent in a Terminal based GUI.
@@ -1031,42 +1206,18 @@ def play_against_reflex():
     print("------------------------------")
     b.print_board()
 
-
-def minimax_vs_reflex_run():
-    # Initialize board
-    b = Board()
-    print("Initial State")
-    print("------------------------------")
-    b.print_board()
-    print("")
-
-    # Load Agents
-    player1 = MiniMaxAgent('R', 'B', False, 'MinMax')
-    player2 = ReflexAgent('B', 'R')
-
-    # Play
-    while b.winner == '.':
-        print("Turn " + str(b.turn_number))
-        print("------------------------------")
-        player1.make_move(b)
-        player2.make_move(b)
-        b.print_board()
-        b.turn_number += 1
-        print("")
-
-    # Print Winner
-    print("Finished! Winner is " + b.winner)
-    print("------------------------------")
-    b.print_board()
-
-    player1.print_nodes_expanded()
-
-
 def main():
     #normal_run()
     #two_one_run()
     #play_against_reflex()
-    minimax_vs_reflex_run()
+
+    alphabeta_vs_minimax()
+    #minimax_vs_alphabeta()
+    #alphabeta_vs_reflex()
+    #reflex_vs_alphabeta()
+    #reflex_vs_minimax()
+    #minimax_vs_reflex_run()
+
     pass
 
 
