@@ -795,6 +795,7 @@ class MiniMaxAgent:
         level_0_node['value'] = max(values)
 
         self.nodes_expanded_list.append(nodes_expanded)
+        print(self.name + ': ' + str(nodes_expanded))
 
     def alpha_beta(self, level_0_node):
         nodes_expanded = 0
@@ -828,6 +829,7 @@ class MiniMaxAgent:
         level_0_node['value'] = lev_0_max
 
         self.nodes_expanded_list.append(nodes_expanded)
+        print(self.name + ': ' + str(nodes_expanded))
 
     def return_best_move(self, level_0_node):
         # find any move that matches the best move
