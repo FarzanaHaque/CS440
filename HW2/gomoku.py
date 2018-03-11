@@ -634,7 +634,7 @@ class MiniMaxAgent:
         # initialize the depth of 3
         for level_1_node in level_0_node['children']:
             for level_2_node in level_1_node['children']:
-                moves = self.get_all_moves(level_1_node['initial_board'])
+                moves = self.get_all_moves(level_2_node['initial_board'])
                 for m in moves:
                     new_field = copy.deepcopy(level_2_node['initial_board'])
                     new_field[m[0]][m[1]] = level_2_node['mid']
@@ -722,24 +722,37 @@ class MiniMaxAgent:
                     break
         return full
 
+    def get_all_moves(self, field):
+        """
+        Gets all the nodes that are available
+        :param field: the game field
+        :return: a list of tuples that match
+        """
+        output = []
+        for i in range(0, 7):
+            for j in range(0, 7):
+                if field[i][j] == '.':
+                    output.append((i, j))
+        return output
+
     def eval_function(self, field):
-        w4 = 1000000
-        w3 = 50000
-        w2 = 2500
+        w4 = 100000
+        w3 = 10000
+        w2 = 100
         w1 = 10 #10
         w0 = 1 #5
 
         me_w0 = 0
         me_w1 = 0
-        me_w2 = -50
+        me_w2 = 0
         me_w3 = 0
         me_w4 = 0
 
-        en_w0 = 0
-        en_w1 = 200
-        en_w2 = 5000
-        en_w3 = 25000
-        en_w4 = 50000
+        en_w0 = 10
+        en_w1 = 100
+        en_w2 = 1000
+        en_w3 = 10000
+        en_w4 = 100000
 
         # this is calculating my chains
         win_segs = self.find_all_win_segs(field, self.oid)
@@ -758,7 +771,7 @@ class MiniMaxAgent:
                    chainme[4] * (w4+me_w4)
 
         win_segsen = self.find_all_win_segs(field, self.mid)
-        chainen = [0, 0, 0, 0, 0, 0]  # segs length 0,1, 2,3,4,5
+        chainen = [0, 0, 0, 0, 0, 0]  # segs length 0,1,2,3,4,5
         # has winning segments score all the segments (1 stone is 1 point)
         for ws in win_segsen:
             score = 0
@@ -771,18 +784,18 @@ class MiniMaxAgent:
                    (chainen[3] * (w3+en_w3)) + \
                    (chainen[4] * (w4+en_w4))
 
-        if chainen[5] != 0:  # b won
-            return float('-inf')
-        if chainme[5] != 0:  # r won
-            return float('inf')
-        if chainen[4] >= 1: #b probs won
-            return -999999999999999
-        if self.check_full(field):
+        if chainen[5] != 0:  # opponent won
+            return -999999999999999999999999999999999
+        elif chainme[5] != 0:  # I won
+            return 99999999999999999999999
+        elif chainen[4] >= 1: # oppo probably wins
+            return -9999999999999999
+        elif self.check_full(field):
             return 0
-        if chainme[4] >= 2: #r probably won but not guaranteed (if the 4 chains share the same open node)
-            return 99999999999999
-
-        return weightme - weighten
+        elif chainme[4] >= 2: # I probably won but not guaranteed (if the 4 chains share the same open node)
+            return 99999999999999999
+        else:
+            return weightme - weighten
 
     def evaluate(self, level_0_node):
         nodes_expanded = 0
@@ -856,19 +869,6 @@ class MiniMaxAgent:
         best_value = level_0_node['value']
         best_children = [child for child in level_0_node['children'] if child['value'] == best_value]
         return best_children[0]['move']
-
-    def get_all_moves(self, field):
-        """
-        Gets all the nodes that are available
-        :param field: the game field
-        :return: a list of tuples that match
-        """
-        output = []
-        for i in range(0, 7):
-            for j in range(0, 7):
-                if field[i][j] == '.':
-                    output.append((i, j))
-        return output
 
     def print_nodes_expanded(self):
         print(self.name + " expansion list")
@@ -1321,12 +1321,12 @@ def main():
     #two_one_run()
     #play_against_reflex()
 
-    #alphabeta_vs_minimax()
-    #minimax_vs_alphabeta()
-    #alphabeta_vs_reflex()
-    #reflex_vs_alphabeta()
-    #reflex_vs_minimax()
-    minimax_vs_reflex_run()
+    #alphabeta_vs_minimax()    # Alex
+    #minimax_vs_alphabeta()    # Alex
+    #alphabeta_vs_reflex()     # Farzana
+    #reflex_vs_alphabeta()     # Farzana
+    #reflex_vs_minimax()       # Jonathan
+    #minimax_vs_reflex_run()   # Jonathan
 
     pass
 
