@@ -723,15 +723,15 @@ class MiniMaxAgent:
         return full
 
     def eval_function(self, field):
-        w4 = 1000
-        w3 = 500
-        w2 = 100
-        w1 = 30
-        w0 = 10
+        w4 = 100000
+        w3 = 5000
+        w2 = 2500
+        w1 = 10 #10
+        w0 = 1 #5
         # this is calculating my chains
         win_segs = self.find_all_win_segs(field, self.oid)
-        chainr = [0, 0, 0, 0, 0, 0]  # segs length 0,1, 2,3,4,5
-        weightr = 0;
+        chainme = [0, 0, 0, 0, 0, 0]  # segs length 0,1, 2,3,4,5
+        weightme = 0;
         # has winning segments score all the segments (1 stone is 1 point)
         win_seg_count = {}
         for ws in win_segs:
@@ -739,32 +739,33 @@ class MiniMaxAgent:
             for t in ws:
                 if field[t[0]][t[1]] == self.mid:
                     score += 1
-            chainr[score] += 1  # increment the chain by that #
-        weightr = chainr[0] * w0 + chainr[1] * w1 + chainr[2] * w2 + chainr[3] * w3 + chainr[4] * w4
-        win_segsb = self.find_all_win_segs(field, self.mid)
-        chainb = [0, 0, 0, 0, 0, 0]  # segs length 0,1, 2,3,4,5
-        weightb = 0;
+            chainme[score] += 1  # increment the chain by that #
+        weightme = chainme[0] * w0 + chainme[1] * w1 + chainme[2] * (w2-50) + chainme[3] * (w3-500) + chainme[4] * (w4-1000)
+        win_segsen = self.find_all_win_segs(field, self.mid)
+        chainen = [0, 0, 0, 0, 0, 0]  # segs length 0,1, 2,3,4,5
+        #weighten = 0;
 
         # has winning segments score all the segments (1 stone is 1 point)
         win_seg_count = {}
-        for ws in win_segsb:
+        for ws in win_segsen:
             score = 0
             for t in ws:
                 if field[t[0]][t[1]] == self.oid:  # used to be b.field
                     score += 1
-
-            # win_seg_count[tuple(ws)] = score
-            chainb[score] += 1  # increment the chain by that #
-        weightb = chainb[0] * w0 + chainb[1] * w1 + chainb[2] * w2 + chainb[3] * w3 + chainb[4] * w4
-        if (chainr[5] != 0 or chainr[
-            4] >= 2):  # r won ***** doesn't take into account situation where it's the same open spot for both 4 chains for opponnet to prevent
-            return float('inf')
-        if (chainb[5] != 0 or chainb[4] >= 2):  # b won
+            chainen[score] += 1  # increment the chain by that #
+        weighten = chainen[1]*(w1+200)+chainen[2]*(w2+5000)+chainen[3] * (w3+25000) + chainen[4] * (w4+50000)
+        if (chainen[5] != 0):  # b won
             return float('-inf')
+        if (chainme[5] != 0):  # r won
+            return float('inf')
+        if(chainen[4]>=1): #b probs won
+            return(-999999999999999)
         if (self.check_full(field)):
             return 0
-        return weightr - weightb
-
+        if(chainme[4]>=2): #r probably won but not guaranteed (if the 4 chains share the same open node)
+            return(999999999999999)
+        return weightme - weighten
+    
     def evaluate(self, level_0_node):
         nodes_expanded = 0
         # evaluate all states at depth 3 (state)
