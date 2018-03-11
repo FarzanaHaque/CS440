@@ -565,14 +565,14 @@ class MiniMaxAgent:
     oid = ''  # Opponents ID
     is_alpha_beta = False
     name = ''
-    nodes_expanded_list = []
+    nodes_expanded_list = None
 
     def __init__(self, ID, oID, is_alpha_beta_in, NAME):
         self.mid = ID
         self.oid = oID
         self.is_alpha_beta = is_alpha_beta_in
         self.name = NAME
-        nodes_expanded_list = []
+        self.nodes_expanded_list = []
 
     def make_move(self, b):
         # build my minimax tree
@@ -924,6 +924,7 @@ def two_one_run():
     print("")
     print("Watcher-----------------------")
     b.print_watcher()
+
 
 # Part 2.2 Runs
 def alphabeta_vs_minimax():
@@ -1301,8 +1302,8 @@ def main():
     #two_one_run()
     #play_against_reflex()
 
-    alphabeta_vs_minimax()
-    #minimax_vs_alphabeta()
+    #alphabeta_vs_minimax()
+    minimax_vs_alphabeta()
     #alphabeta_vs_reflex()
     #reflex_vs_alphabeta()
     #reflex_vs_minimax()
