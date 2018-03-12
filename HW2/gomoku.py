@@ -812,22 +812,34 @@ class MiniMaxAgent:
                 values = []
                 for level_3_node in level_2_node['children']:
                     values.append(level_3_node['value'])
-                level_2_node['value'] = max(values)
+                if values:
+                    level_2_node['value'] = max(values)
+                else:
+                    level_2_node['value'] = -99999999999999999999999
 
         # evaluate best states at depth 1 (min)
         for level_1_node in level_0_node['children']:
             values = []
             for level_2_node in level_1_node['children']:
                 values.append(level_2_node['value'])
-            level_1_node['value'] = min(values)
+            if values:
+                level_1_node['value'] = min(values)
+            else:
+                level_1_node['value'] = 99999999999999999999999
 
         # evaluate best states at depth 0 (max)
         values = []
         for level_1_node in level_0_node['children']:
             values.append(level_1_node['value'])
-        level_0_node['value'] = max(values)
+        if values:
+            level_0_node['value'] = max(values)
+        else:
+            level_0_node['value'] = -999999999999999999999
 
-        self.nodes_expanded_list.append(nodes_expanded)
+        if nodes_expanded > 0:
+            self.nodes_expanded_list.append(nodes_expanded)
+        else:
+            self.nodes_expanded_list.append(1)
         print(self.name + ': ' + str(nodes_expanded))
 
     def alpha_beta(self, level_0_node):
@@ -860,15 +872,22 @@ class MiniMaxAgent:
                 lev_0_max = level_1_node['value']
 
         level_0_node['value'] = lev_0_max
-
-        self.nodes_expanded_list.append(nodes_expanded)
+        if nodes_expanded > 0:
+            self.nodes_expanded_list.append(nodes_expanded)
+        else:
+            self.nodes_expanded_list.append(1)
         print(self.name + ': ' + str(nodes_expanded))
 
     def return_best_move(self, level_0_node):
         # find any move that matches the best move
         best_value = level_0_node['value']
         best_children = [child for child in level_0_node['children'] if child['value'] == best_value]
-        return best_children[0]['move']
+        if best_children:
+            return best_children[0]['move']
+        else:
+            # no more valid children, just get a valid
+            best = self.get_all_moves(level_0_node['initial_board'])[0]
+            return best
 
     def print_nodes_expanded(self):
         print(self.name + " expansion list")
@@ -967,12 +986,18 @@ def alphabeta_vs_minimax():
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+        if b.check_full():
+            b.winner = '&'
+            break
 
         player2.make_move(b)
         b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
+            break
+        if b.check_full():
+            b.winner = '&'
             break
 
         b.print_board()
@@ -1012,12 +1037,18 @@ def minimax_vs_alphabeta():
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+        if b.check_full():
+            b.winner = '&'
+            break
 
         player2.make_move(b)
         b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
+            break
+        if b.check_full():
+            b.winner = '&'
             break
 
         b.print_board()
@@ -1057,12 +1088,18 @@ def alphabeta_vs_reflex():
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+        if b.check_full():
+            b.winner = '&'
+            break
 
         player2.make_move(b)
         b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
+            break
+        if b.check_full():
+            b.winner = '&'
             break
 
         b.print_board()
@@ -1099,12 +1136,18 @@ def reflex_vs_alphabeta():
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+        if b.check_full():
+            b.winner = '&'
+            break
 
         player2.make_move(b)
         b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
+            break
+        if b.check_full():
+            b.winner = '&'
             break
 
         b.print_board()
@@ -1141,12 +1184,18 @@ def reflex_vs_minimax():
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+        if b.check_full():
+            b.winner = '&'
+            break
 
         player2.make_move(b)
         b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
+            break
+        if b.check_full():
+            b.winner = '&'
             break
 
         b.print_board()
@@ -1183,12 +1232,18 @@ def minimax_vs_reflex_run():
         if b.check_winner(b.field, 'R'):
             b.winner = 'R'
             break
+        if b.check_full():
+            b.winner = '&'
+            break
 
         player2.make_move(b)
         b.update_field()
         b.check_winner(b.field, 'B')
         if b.check_winner(b.field, 'B'):
             b.winner = 'B'
+            break
+        if b.check_full():
+            b.winner = '&'
             break
 
         b.print_board()
@@ -1326,7 +1381,7 @@ def main():
     #alphabeta_vs_reflex()     # Farzana
     #reflex_vs_alphabeta()     # Farzana
     #reflex_vs_minimax()       # Jonathan
-    #minimax_vs_reflex_run()   # Jonathan
+    minimax_vs_reflex_run()   # Jonathan
 
     pass
 
