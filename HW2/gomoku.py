@@ -1373,7 +1373,7 @@ def play_against_reflex():
 
 def main():
     #normal_run()
-    #two_one_run()
+    two_one_run()
     #play_against_reflex()
 
     #alphabeta_vs_minimax()    # Alex
@@ -1381,7 +1381,7 @@ def main():
     #alphabeta_vs_reflex()     # Farzana
     #reflex_vs_alphabeta()     # Farzana
     #reflex_vs_minimax()       # Jonathan
-    minimax_vs_reflex_run()   # Jonathan
+    #minimax_vs_reflex_run()   # Jonathan
 
     pass
 
