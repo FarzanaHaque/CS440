@@ -2,6 +2,7 @@
 Write the testing function here.
 """
 
+
 def find_relevant_tokens(data,num):
 	relevant = []
 	for elem in data:
@@ -9,7 +10,8 @@ def find_relevant_tokens(data,num):
 			relevant.append(elem)
 	return relevant
 
-def train(data):
+
+def train(training_data):
 	"""
 	Trains the data and returns a 3D array (a list of matrices) of probabilites of each pixel in each class
 	Think a heatmap of each class as a matrix
