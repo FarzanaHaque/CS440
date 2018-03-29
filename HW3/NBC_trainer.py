@@ -2,6 +2,12 @@
 Write the testing function here.
 """
 
+def find_relevant_tokens(data,num):
+	relevant = []
+	for elem in data:
+		if elem[1]==num:
+			relevant.append(elem)
+	return relevant
 
 def train(data):
 	"""
