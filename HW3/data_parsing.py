@@ -1,7 +1,5 @@
 """
 This module handles parsing in test data.
-Recommend you also have global variables "constants" (python doesn't do constants)
-like here to access data easier
 """
 
 GET_IMAGE = 0
