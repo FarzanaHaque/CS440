@@ -1,5 +1,5 @@
 """
-Write the testing function here.
+Write the training function here.
 """
 
 
