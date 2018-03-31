@@ -5,6 +5,7 @@ import data_parsing as parser
 import NBC_trainer
 import NBC_tester
 import NBC_evaluate
+import NBC_odds_ratio
 
 
 class NBC:
@@ -43,7 +44,7 @@ class NBC:
 		Classifies all the data given the trained_data from training.
 		:param trained_data: the 3d list returned from training. See training for exact specs
 		:param test_data: the data to test the trained NBC against
-		:return: 1d array matching the data from data_parser
+		:return: 1d array matching the data from data_parser [(10 probs, answer),...]
 		"""
 		self.answers = NBC_tester.test(trained_data, test_data)
 		pass
@@ -51,12 +52,20 @@ class NBC:
 	def evaluate(self, answers, test_data):
 		"""
 		Evals the answers that the NBC produces in testing
-		:param answers: the 1d list answers from testing
+		:param answers: the 1d list answers from testing [(10 probs, answer),...]
 		:param test_data: the parsed list of test_data from the parser
 		:return: (list of classifcation accuracy for each digit (10 values),
 				confusion matrix (10*10) (see webpage for details))
 		"""
 		self.class_acc, self.confusion_matrix = NBC_evaluate.evaluate(answers, test_data)
+
+	def calculate_odds_ratio(self, trained_data):
+		"""
+		Displays the odds ratio given a 3d set of trained data
+		:param trained_data: the 3d array of trained data
+		:return: None
+		"""
+		NBC_odds_ratio.calculate_odds_ratio(trained_data)
 
 
 def main():
