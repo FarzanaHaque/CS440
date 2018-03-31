@@ -59,7 +59,7 @@ class NBC:
 		"""
 		self.class_acc, self.confusion_matrix = NBC_evaluate.evaluate(answers, test_data)
 
-	def calculate_odds_ratio(self, trained_data):
+	def calculate_odds_ratio(self, trained_data, confusion_matrix):
 		"""
 		Displays the odds ratio given a 3d set of trained data
 		:param trained_data: the 3d array of trained data

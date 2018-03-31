@@ -2,6 +2,7 @@ import NBC_trainer as NBCt
 import data_parsing as dp
 import numpy as np
 
+
 def evaluate(answers, test_data):
 	"""
 	Evals the answers that the NBC produces in testing
@@ -25,7 +26,13 @@ def evaluate(answers, test_data):
 	class_acc = amount_correct_class / amount_actual_class
 
 	# Calculate Confusion Matrix
-	confusion_matrix = np.zeros((10,10))
+	confusion_matrix = np.zeros((10, 10))
 	for i in range(0, len(answers)):
+		confusion_matrix[test_data[i][dp.GET_ANSWER]][answers[i][10]] += 1
 
-	return class_acc, None
+	for i in range(0, 10):
+		confusion_matrix[i, :] = confusion_matrix[i, :] / amount_actual_class[i]
+
+	# Print the most and least fit stuff for each image
+
+	return class_acc, confusion_matrix
