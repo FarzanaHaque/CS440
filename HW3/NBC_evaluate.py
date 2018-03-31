@@ -8,4 +8,5 @@ def evaluate(answers, test_data):
 	:return: (list of classifcation accuracy for each digit (10 values),
 			confusion matrix (10*10) (see webpage for details))
 	"""
+
 	return None, None
