@@ -26,14 +26,14 @@ After you compute the above decision function values for all ten classes for eve
 			for row in range(32):
 				for col in range(32):
 					if tups[0][row][col]==1:#pixel=1
-						numprob[nums]=math.log1p(trained_data[nums][row][col])+numprob[nums]
+						numprob[nums]=math.log(trained_data[nums][row][col])+numprob[nums]
 					else :#pixel=0
-						numprob[nums] = math.log1p(1-trained_data[nums][row][col]) + numprob[nums]
-			numprob[nums]+=math.log1p(prior_data[nums])
+						numprob[nums] = math.log(1-trained_data[nums][row][col]) + numprob[nums]
+			numprob[nums]+=math.log(prior_data[nums])
 			if numprob[nums] > best_prob:
 				best_num = nums
 				best_prob = numprob[nums]
-			numprob[nums]=math.log(numprob[nums])
+			numprob[nums]=math.exp(numprob[nums])
 		numprob[10]=best_num
 		answer.append(numprob)
 	return answer
