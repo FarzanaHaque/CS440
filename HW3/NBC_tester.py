@@ -4,10 +4,11 @@ Tester function matching 1.1 testing
 import math
 import NBC_trainer
 
+#def fpriors(data):
 
 
 
-def test(trained_data, test_data):
+def test(training_data,trained_data, test_data):
 	"""
 	Classifies all the data given the trained_data from training.
 	:param trained_data: the 3d list returned from training. See training for exact specs
@@ -17,20 +18,20 @@ def test(trained_data, test_data):
 After you compute the above decision function values for all ten classes for every test image, you will use them for MAP classification.
 	"""
 	answer=[]
-	prior_data=NBC_trainer.priors(trained_data)
-	for tups in trained_data: #does this get every tuple?
-		numprob=[0,0,0,0,0,0,0,0,0,0,0]
-		best_num=0
-		best_prob=0
+	prior_data=NBC_trainer.priors(training_data)
+	for tups in test_data: #get each tuple in parsed test data
+		numprob=[0e-200,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0] #inital probs of each num class
+		best_num=-1
+		best_prob=-9999999
 		for nums in range(10):
+			numprob[nums]=math.log(prior_data[nums])
 			for row in range(32):
 				for col in range(32):
 					if tups[0][row][col]==1:#pixel=1
-						numprob[nums]=math.log(trained_data[nums][row][col])+numprob[nums]
+						numprob[nums]+=math.log(trained_data[nums][row][col])
 					else :#pixel=0
-						numprob[nums] = math.log(1-trained_data[nums][row][col]) + numprob[nums]
-			numprob[nums]+=math.log(prior_data[nums])
-			if numprob[nums] > best_prob:
+						numprob[nums] += math.log(1-trained_data[nums][row][col])
+			if numprob[nums] >= best_prob:
 				best_num = nums
 				best_prob = numprob[nums]
 			numprob[nums]=math.exp(numprob[nums])
