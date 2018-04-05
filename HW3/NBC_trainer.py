@@ -27,7 +27,7 @@ def train(data):
 	:return: 3D list of probabilities of each pixel of each class. 1- class, 2- y, row, 3- x, column
 	"""
 	probs = []
-	k = 0.1
+	k = 0.01
 	for i in range(10):
 		rel = find_relevant_tokens(data,i)
 		matrix = []

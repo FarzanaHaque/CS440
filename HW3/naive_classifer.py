@@ -39,14 +39,14 @@ class NBC:
 		self.trained_data = NBC_trainer.train(training_data)
 		pass
 
-	def testing(self, trained_data, test_data):
+	def testing(self, training_data, trained_data, test_data):
 		"""
 		Classifies all the data given the trained_data from training.
 		:param trained_data: the 3d list returned from training. See training for exact specs
 		:param test_data: the data to test the trained NBC against
 		:return: 1d array matching the data from data_parser [(10 probs, answer),...]
 		"""
-		self.answers = NBC_tester.test(trained_data, test_data)
+		self.answers = NBC_tester.test(training_data, trained_data, test_data)
 		pass
 
 	def evaluate(self, answers, test_data):
@@ -67,10 +67,15 @@ class NBC:
 		"""
 		NBC_odds_ratio.calculate_odds_ratio(trained_data, confusion_matrix)
 
+	def do_everything(self):
+		self.training(self.training_data)
+		self.testing(self.training_data, self.trained_data, self.test_data)
+		self.evaluate(self.answers, self.test_data)
+		self.calculate_odds_ratio(self.trained_data, self.confusion_matrix)
 
 def main():
 	classifier = NBC('optdigits-orig_train.txt', 'optdigits-orig_test.txt')
-	parser.print_image(classifier.test_data[0][parser.GET_IMAGE])
+	classifier.do_everything()
 	pass
 
 

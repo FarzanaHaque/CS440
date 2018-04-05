@@ -27,10 +27,11 @@ def get_best_and_worst(answers, test_data, in_class):
 
 def print_best_and_worst(best_and_worst, in_class):
 	print("For class: " + str(in_class))
-	print("Highest Prob of " + str(best_and_worst[0][1]))
+	print("Highest Prob of " + str(best_and_worst[0][1]) + " | Image Below:")
 	dp.print_image(best_and_worst[0][0])
-	print("Lowest Prob of " + str(best_and_worst[1][1]))
+	print("Lowest Prob of " + str(best_and_worst[1][1]) + " | Image Below:")
 	dp.print_image(best_and_worst[1][0])
+	print("")
 
 
 def evaluate(answers, test_data):
@@ -65,9 +66,15 @@ def evaluate(answers, test_data):
 
 	# Print the most and least fit stuff for each image
 	best_and_worst_tokens = []
-	for i in range(0, len(answers)):
+	for i in range(0, 10):
 		temp = get_best_and_worst(answers, test_data, i)
 		print_best_and_worst(temp, i)
 		best_and_worst_tokens.append(temp)
 
+	print("From Evaluate: Accuracy List. Each percentage matches to the class by position")
+	print(class_acc)
+	print("From Evaluate: Average accuracy. Average of acc list")
+	print(np.average(class_acc))
+	print("From Evaluate: Confusion Matrix. See online for exact definition. Notice that the diagonals match the acc list")
+	print(confusion_matrix)
 	return class_acc, confusion_matrix

@@ -1,3 +1,8 @@
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+
+
 def display_odds_ratios(trained_data,confusion_matrix):
 	used = set([])
 	for i in range(4):
@@ -22,4 +27,3 @@ def display_odds_ratios(trained_data,confusion_matrix):
 		plt.imshow(np.array(log_like2),cmap='hot',interpolation='nearest')
 		plt.imshow(np.array(odds_matrix),cmap='hot',interpolation='nearest')
 		plt.show()
-	
