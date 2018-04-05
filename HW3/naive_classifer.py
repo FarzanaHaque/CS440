@@ -59,19 +59,19 @@ class NBC:
 		"""
 		self.class_acc, self.confusion_matrix = NBC_evaluate.evaluate(answers, test_data)
 
-	def calculate_odds_ratio(self, trained_data, confusion_matrix):
+	def display_odds_ratios(self, trained_data, confusion_matrix):
 		"""
 		Displays the odds ratio given a 3d set of trained data
 		:param trained_data: the 3d array of trained data
 		:return: None
 		"""
-		NBC_odds_ratio.calculate_odds_ratio(trained_data, confusion_matrix)
+		NBC_odds_ratio.display_odds_ratios(trained_data, confusion_matrix)
 
 	def do_everything(self):
 		self.training(self.training_data)
 		self.testing(self.training_data, self.trained_data, self.test_data)
 		self.evaluate(self.answers, self.test_data)
-		self.calculate_odds_ratio(self.trained_data, self.confusion_matrix)
+		self.display_odds_ratios(self.trained_data, self.confusion_matrix)
 
 def main():
 	classifier = NBC('optdigits-orig_train.txt', 'optdigits-orig_test.txt')

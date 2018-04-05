@@ -65,6 +65,7 @@ def evaluate(answers, test_data):
 		confusion_matrix[i, :] = confusion_matrix[i, :] / amount_actual_class[i]
 
 	# Print the most and least fit stuff for each image
+	print("The best and worst of each class. Which images had the highest and lowest prob?")
 	best_and_worst_tokens = []
 	for i in range(0, 10):
 		temp = get_best_and_worst(answers, test_data, i)
