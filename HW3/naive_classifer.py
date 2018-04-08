@@ -73,6 +73,7 @@ class NBC:
 		self.evaluate(self.answers, self.test_data)
 		self.display_odds_ratios(self.trained_data, self.confusion_matrix)
 
+
 def main():
 	classifier = NBC('optdigits-orig_train.txt', 'optdigits-orig_test.txt')
 	classifier.do_everything()
