@@ -1,11 +1,13 @@
 import numpy as np
 import numpy.linalg as la
+from random import shuffle
 from sklearn.metrics import confusion_matrix
 
 import data_parsing as parser
 import copy
 
 # 1- bias 0- no bias
+# BIAS is amount of bias
 BIAS_YES = 0
 BIAS = 1
 
@@ -147,7 +149,7 @@ class Perceptron:
 		con_mat = confusion_matrix(actual, ret_ans)
 		con_mat_per = con_mat/con_mat.sum(axis=1)[:, None]
 
-		return score, con_mat_per
+		return score, con_mat
 
 	def report(self):
 		"""

@@ -6,7 +6,7 @@ import NBC_trainer
 import NBC_tester
 import NBC_evaluate
 import NBC_odds_ratio
-
+import numpy as np
 
 class NBC:
 	"""
@@ -75,6 +75,7 @@ class NBC:
 
 
 def main():
+	#np.set_printoptions(precision=4, linewidth=1000)
 	classifier = NBC('optdigits-orig_train.txt', 'optdigits-orig_test.txt')
 	classifier.do_everything()
 	pass
