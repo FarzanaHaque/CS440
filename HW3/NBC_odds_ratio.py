@@ -26,10 +26,13 @@ def display_odds_ratios(trained_data,confusion_matrix):
 		log_like2 = []
 		for line in trained_data[entry[1]]:
 			log_like2.append([math.log(x) for x in line])
-		plt.imshow(np.array(log_like1),cmap='hot',interpolation='nearest')
+		plt.imshow(np.array(log_like1),cmap='jet',interpolation='nearest')
+		plt.colorbar()
 		plt.show()
-		plt.imshow(np.array(log_like2),cmap='hot',interpolation='nearest')
+		plt.imshow(np.array(log_like2),cmap='jet',interpolation='nearest')
+		plt.colorbar()
 		plt.show()
-		plt.imshow(np.array(odds_matrix),cmap='hot',interpolation='nearest')
+		plt.imshow(np.array(odds_matrix),cmap='jet',interpolation='nearest')
+		plt.colorbar()
 		plt.show()
 	
