@@ -1,6 +1,8 @@
 import numpy as np
 import numpy.linalg as la
 from random import shuffle
+import matplotlib.pyplot as plt
+
 from sklearn.metrics import confusion_matrix
 
 import data_parsing as parser
@@ -149,7 +151,7 @@ class Perceptron:
 		con_mat = confusion_matrix(actual, ret_ans)
 		con_mat_per = con_mat/con_mat.sum(axis=1)[:, None]
 
-		return score, con_mat
+		return score, con_mat_per
 
 	def report(self):
 		"""
@@ -162,6 +164,14 @@ class Perceptron:
 		print("Test Accuracy: " + str(self.test_score))
 		print("Confusion Matrix as Percentages: ")
 		print(self.con_mat)
+
+		for i in range(0, 10):
+			zero_img_temp = self.weights[i, :][:1024]
+			zero_img = np.reshape(zero_img_temp, (32, 32))
+			plt.imshow(zero_img, cmap='jet')
+			plt.colorbar()
+			plt.show()
+
 
 	def do_everything(self):
 		"""
