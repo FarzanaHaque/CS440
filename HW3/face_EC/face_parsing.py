@@ -52,8 +52,8 @@ def create_data(datafile,labelfile):
 				newline.append(int(c))
 		current_image.append(newline)"""
 	file.close()
-	print(len(labels))
-	print(len(data))
+	#print(len(labels))
+	#print(len(data))
 	return data
 
 
@@ -64,16 +64,14 @@ def print_image(img):
 	:return: None
 	"""
 	for line in img:
-		#for c in line:
-		#	print(c)
-		print(line)
+		for c in line:
+			print(c, end="")
 		print()
-
 
 def main():
 	data = create_data('facedata/facedatatrain','facedata/facedatatrainlabels')
-	for i in range(20):
-		print_image(data[i][GET_IMAGE])
+	#for i in range(20):
+	#	print_image(data[i][GET_IMAGE])
 	#print(len(data[0])) #61*70
 	pass
 

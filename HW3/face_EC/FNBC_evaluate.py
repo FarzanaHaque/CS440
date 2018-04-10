@@ -1,6 +1,6 @@
 import face_trainer as NBCt
 import face_parsing as dp
-#import numpy as np
+import numpy as np
 
 
 def get_best_and_worst(answers, test_data, in_class):
